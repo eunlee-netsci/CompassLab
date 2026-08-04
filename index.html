@@ -1,87 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="utf-8">
-      <title>COMPutational Analysis of Social System Lab  - Home</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="description" content="Research Lab, Home, Pukyong National University">
-      <meta name="author" content="">
-      <!-- Le styles -->
-      <link href="css/bootstrap.min.css" rel="stylesheet">
-      <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
-      <link href="css/theme.css" rel="stylesheet">
-   </head>
-   <body>
-      <div class="container">
-         <header class="jumbotron subhead" id="overview">
-            <p class="lead"> Pukyong National University </p>
-            <h1>COMPutational Analysis of Social System Lab</h1>
-         </header>
-         <div class="masthead">
-            <div class="navbar">
-               <div class="navbar-inner">
-                  <div class="container">
-                     <ul class="nav">
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href="team.html">Team</a></li>
-                        <li><a href="research.html">Research</a></li>
-                        <li><a href="publications.html">Publications</a></li>
-                        <li><a href="news.html">News</a></li>
-                        <li><a href="teaching.html">Teaching</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                     </ul>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="row-fluid">
-            <div class="span12">
-               <div id="main-carousel" class="carousel slide">
-                  <div class="carousel-inner">
-                     <div class="item active">
-                        <img src="images/homepage_cover.jpg" class="carousel-image" alt="">                      
-                        <div class="carousel-caption">
-                           <h4>Welcome to the COMPASS Lab</h4>
-                           <!-- -->
-                           <p></p>
-                        </div>
-                     </div>
-                     <div class="item">
-                        <img src="images/main_building.png" class="carousel-image" alt="">
-                        <div class="carousel-caption">
-                           <h4>Lab building</h4>
-                           <p></p>
-                        </div>
-                     </div>
-                  </div>
-                  <a class="left carousel-control" href="#main-carousel" data-slide="prev">‹</a>
-                  <a class="right carousel-control" href="#main-carousel" data-slide="next">›</a>
-               </div>
-            </div>
-         </div>
-         
-      <footer id="footer">
-         <div class="container-fluid">
-            <div class="row-fluid">
-               <div class="span5">
-                  <h3>Contact Information</h3>
-                  <p><b>내선 번호: </b>4515</p>
-                  <a href="eunlee@pknu.ac.kr">Email: eunlee@pknu.ac.kr</a>
-               </div>
-               <div class="span6">
-                  <h3>Address</h3>
-                  <p>부산광역시 남구 용소로 45 자연과학2관 7413호<br>
-                     C24 - room 7413, Yongso-ro 45, Nam-gu, Busan, Republic of Korea, 48513<br>
-                  </p>
-                  <a href="https://maps.app.goo.gl/Z1Kx1FXUQYcB9nNBA">Show Map</a>
-               </div>
-            </div>
-         </div>
-      </footer>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COMPASS Lab — Computational Analysis of Social System Lab, Pukyong National University</title>
+<meta name="description" content="COMPASS Lab at Pukyong National University studies network science and computational social science: perception bias, science of science, social systems, health information, algorithms, brain and climate networks.">
+<meta property="og:title" content="COMPASS Lab — Computational Analysis of Social System Lab, Pukyong National University">
+<meta property="og:description" content="COMPASS Lab at Pukyong National University studies network science and computational social science: perception bias, science of science, social systems, health information, algorithms, brain and climate networks.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='none' stroke='%231b4d89' stroke-width='3'/><circle cx='16' cy='16' r='4' fill='%231b4d89'/></svg>">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
 
-      <!-- Javascript files -->
-      <script src="js/jquery-1.9.1.min.js"></script>
-      <script src="js/bootstrap.min.js"></script>
-      <script> $('#main-carousel').carousel(); </script>
-   </body>
+<!-- ===== HEADER — identical on every page; tools/sync_shell.py keeps them in sync ===== -->
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="wordmark" href="index.html">
+      <span class="mark" aria-hidden="true">C</span>
+      <span>COMPASS <span class="sub">Pukyong Nat’l Univ.</span></span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav" data-i18n-label="nav.menu">☰</button>
+    <nav class="site-nav" id="nav">
+      <ul>
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="research.html" data-i18n="nav.research">Research</a></li>
+        <li><a href="publications.html" data-i18n="nav.publications">Publications</a></li>
+        <li><a href="people.html" data-i18n="nav.people">People</a></li>
+        <li><a href="teaching.html" data-i18n="nav.teaching">Teaching</a></li>
+        <li><a href="news.html" data-i18n="home.newsTitle">News</a></li>
+        <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-set-lang="ko" aria-pressed="false">KO</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <p class="eyebrow">Pukyong National University · Dept. of Scientific Computing</p>
+        <h1 data-lang="en">Structure decides<br>what people can see.</h1>
+        <h1 data-lang="ko" hidden>구조가 결정한다,<br>사람이 무엇을 볼 수 있는지를.</h1>
+
+        <p class="lede" data-lang="en">
+          <strong>COMP</strong>utational <strong>A</strong>nalysis of <strong>S</strong>ocial
+          <strong>S</strong>ystem Lab. We build computational models of social systems — networks,
+          careers, health, climate — and ask how structural asymmetries quietly bias perception,
+          opportunity and measurement itself.
+        </p>
+        <p class="lede" data-lang="ko" hidden>
+          <strong>COMP</strong>utational <strong>A</strong>nalysis of <strong>S</strong>ocial
+          <strong>S</strong>ystem Lab. 네트워크, 경력, 건강, 기후 등 사회 시스템의 계산 모형을 만들고,
+          구조적 비대칭이 인식과 기회, 나아가 측정 자체를 어떻게 조용히 왜곡하는지를 연구합니다.
+        </p>
+
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="publications.html" data-i18n="cta.publications">Publications</a>
+          <a class="btn" href="research.html" data-i18n="nav.research">Research</a>
+          <a class="btn" href="people.html" data-i18n="nav.people">People</a>
+        </div>
+
+        <div class="hero__meta">
+          <span>Network science</span>
+          <span>Computational social science</span>
+          <span>Complex systems</span>
+        </div>
+      </div>
+
+      <div>
+        <svg class="netfig" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A network in which two groups attach preferentially within group">
+  <g>
+    <line class="edge" x1="353.0" y1="201.9" x2="326.0" y2="127.3"/>
+    <line class="edge" x1="353.0" y1="201.9" x2="297.2" y2="96.2"/>
+    <line class="edge" x1="353.0" y1="201.9" x2="345.6" y2="176.1"/>
+    <line class="edge" x1="353.0" y1="201.9" x2="279.0" y2="288.9"/>
+    <line class="edge" x1="353.0" y1="201.9" x2="354.6" y2="106.9"/>
+    <line class="edge" x1="353.0" y1="201.9" x2="459.8" y2="189.9"/>
+    <line class="edge" x1="353.0" y1="201.9" x2="315.5" y2="269.0"/>
+    <line class="edge" x1="353.0" y1="201.9" x2="342.4" y2="309.4"/>
+    <line class="edge" x1="353.0" y1="201.9" x2="403.7" y2="159.3"/>
+    <line class="edge" x1="353.0" y1="201.9" x2="425.1" y2="224.5"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="297.2" y2="96.2"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="345.6" y2="176.1"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="216.2" y2="118.7"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="207.5" y2="198.9"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="412.4" y2="129.7"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="301.8" y2="181.4"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="354.6" y2="106.9"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="286.6" y2="54.4"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="458.4" y2="128.9"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="401.9" y2="62.3"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="403.7" y2="159.3"/>
+    <line class="edge" x1="326.0" y1="127.3" x2="239.2" y2="65.6"/>
+    <line class="edge" x1="297.2" y1="96.2" x2="216.2" y2="118.7"/>
+    <line class="edge" x1="297.2" y1="96.2" x2="381.6" y2="46.3"/>
+    <line class="edge" x1="297.2" y1="96.2" x2="186.2" y2="62.4"/>
+    <line class="edge" x1="297.2" y1="96.2" x2="354.3" y2="84.1"/>
+    <line class="edge" x1="345.6" y1="176.1" x2="207.5" y2="198.9"/>
+    <line class="edge" x1="345.6" y1="176.1" x2="412.4" y2="129.7"/>
+    <line class="edge" x1="345.6" y1="176.1" x2="420.6" y2="104.2"/>
+    <line class="edge" x1="345.6" y1="176.1" x2="299.1" y2="293.7"/>
+    <line class="edge" x1="345.6" y1="176.1" x2="425.1" y2="224.5"/>
+    <line class="edge" x1="345.6" y1="176.1" x2="354.3" y2="84.1"/>
+    <line class="edge" x1="216.2" y1="118.7" x2="105.5" y2="159.1"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="279.0" y2="288.9"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="301.8" y2="181.4"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="191.1" y2="272.9"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="258.4" y2="192.5"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="165.6" y2="213.1"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="102.9" y2="237.7"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="105.5" y2="159.1"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="133.3" y2="267.2"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="141.7" y2="128.6"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="132.3" y2="94.3"/>
+    <line class="edge" x1="207.5" y1="198.9" x2="236.8" y2="289.7"/>
+    <line class="edge" x1="279.0" y1="288.9" x2="191.1" y2="272.9"/>
+    <line class="edge" x1="279.0" y1="288.9" x2="388.3" y2="279.4"/>
+    <line class="edge" x1="279.0" y1="288.9" x2="251.2" y2="379.4"/>
+    <line class="edge" x1="279.0" y1="288.9" x2="326.4" y2="362.0"/>
+    <line class="edge" x1="412.4" y1="129.7" x2="393.8" y2="197.1"/>
+    <line class="edge" x1="412.4" y1="129.7" x2="381.6" y2="46.3"/>
+    <line class="edge" x1="412.4" y1="129.7" x2="494.0" y2="163.4"/>
+    <line class="edge" x1="301.8" y1="181.4" x2="393.8" y2="197.1"/>
+    <line class="edge" x1="354.6" y1="106.9" x2="420.6" y2="104.2"/>
+    <line class="edge" x1="354.6" y1="106.9" x2="286.6" y2="54.4"/>
+    <line class="edge" x1="354.6" y1="106.9" x2="401.9" y2="62.3"/>
+    <line class="edge" x1="354.6" y1="106.9" x2="280.2" y2="130.1"/>
+    <line class="edge" x1="191.1" y1="272.9" x2="102.9" y2="237.7"/>
+    <line class="edge" x1="191.1" y1="272.9" x2="299.1" y2="293.7"/>
+    <line class="edge" x1="191.1" y1="272.9" x2="133.3" y2="267.2"/>
+    <line class="edge" x1="393.8" y1="197.1" x2="258.4" y2="192.5"/>
+    <line class="edge" x1="393.8" y1="197.1" x2="459.8" y2="189.9"/>
+    <line class="edge" x1="393.8" y1="197.1" x2="388.3" y2="279.4"/>
+    <line class="edge" x1="393.8" y1="197.1" x2="494.0" y2="163.4"/>
+    <line class="edge" x1="286.6" y1="54.4" x2="186.2" y2="62.4"/>
+    <line class="edge" x1="258.4" y1="192.5" x2="315.5" y2="269.0"/>
+    <line class="edge" x1="258.4" y1="192.5" x2="165.6" y2="213.1"/>
+    <line class="edge" x1="258.4" y1="192.5" x2="286.4" y2="246.7"/>
+    <line class="edge" x1="258.4" y1="192.5" x2="170.6" y2="107.2"/>
+    <line class="edge" x1="258.4" y1="192.5" x2="280.2" y2="130.1"/>
+    <line class="edge" x1="459.8" y1="189.9" x2="458.4" y2="128.9"/>
+    <line class="edge" x1="315.5" y1="269.0" x2="342.4" y2="309.4"/>
+    <line class="edge" x1="315.5" y1="269.0" x2="287.3" y2="349.9"/>
+    <line class="edge" x1="315.5" y1="269.0" x2="286.4" y2="246.7"/>
+    <line class="edge" x1="342.4" y1="309.4" x2="236.8" y2="289.7"/>
+    <line class="edge" x1="342.4" y1="309.4" x2="375.2" y2="392.3"/>
+    <line class="edge" x1="102.9" y1="237.7" x2="26.0" y2="205.1"/>
+    <line class="edge" x1="299.1" y1="293.7" x2="287.3" y2="349.9"/>
+    <line class="edge" x1="299.1" y1="293.7" x2="326.4" y2="362.0"/>
+    <line class="edge" x1="105.5" y1="159.1" x2="62.9" y2="105.9"/>
+    <line class="edge" x1="105.5" y1="159.1" x2="26.0" y2="205.1"/>
+    <line class="edge" x1="287.3" y1="349.9" x2="251.2" y2="379.4"/>
+    <line class="edge" x1="186.2" y1="62.4" x2="141.7" y2="128.6"/>
+    <line class="edge" x1="186.2" y1="62.4" x2="170.6" y2="107.2"/>
+    <line class="edge" x1="186.2" y1="62.4" x2="132.3" y2="94.3"/>
+    <line class="edge" x1="186.2" y1="62.4" x2="107.1" y2="26.0"/>
+    <line class="edge" x1="326.4" y1="362.0" x2="375.2" y2="392.3"/>
+    <line class="edge" x1="170.6" y1="107.2" x2="62.9" y2="105.9"/>
+    <line class="edge" x1="170.6" y1="107.2" x2="239.2" y2="65.6"/>
+    <line class="edge" x1="132.3" y1="94.3" x2="107.1" y2="26.0"/>
+  </g>
+  <g>
+    <circle class="node-b" cx="420.6" cy="104.2" r="3.93"/>
+    <circle class="node-a" cx="381.6" cy="46.3" r="3.93"/>
+    <circle class="node-a" cx="165.6" cy="213.1" r="3.93"/>
+    <circle class="node-b" cx="458.4" cy="128.9" r="3.93"/>
+    <circle class="node-b" cx="401.9" cy="62.3" r="3.93"/>
+    <circle class="node-b" cx="403.7" cy="159.3" r="3.93"/>
+    <circle class="node-b" cx="425.1" cy="224.5" r="3.93"/>
+    <circle class="node-a" cx="388.3" cy="279.4" r="3.93"/>
+    <circle class="node-a" cx="133.3" cy="267.2" r="3.93"/>
+    <circle class="node-a" cx="286.4" cy="246.7" r="3.93"/>
+    <circle class="node-a" cx="251.2" cy="379.4" r="3.93"/>
+    <circle class="node-a" cx="354.3" cy="84.1" r="3.93"/>
+    <circle class="node-b" cx="494.0" cy="163.4" r="3.93"/>
+    <circle class="node-a" cx="141.7" cy="128.6" r="3.93"/>
+    <circle class="node-a" cx="280.2" cy="130.1" r="3.93"/>
+    <circle class="node-a" cx="62.9" cy="105.9" r="3.93"/>
+    <circle class="node-a" cx="26.0" cy="205.1" r="3.93"/>
+    <circle class="node-a" cx="107.1" cy="26.0" r="3.93"/>
+    <circle class="node-a" cx="236.8" cy="289.7" r="3.93"/>
+    <circle class="node-a" cx="239.2" cy="65.6" r="3.93"/>
+    <circle class="node-a" cx="375.2" cy="392.3" r="3.93"/>
+    <circle class="node-a" cx="216.2" cy="118.7" r="4.40"/>
+    <circle class="node-a" cx="301.8" cy="181.4" r="4.40"/>
+    <circle class="node-b" cx="286.6" cy="54.4" r="4.40"/>
+    <circle class="node-b" cx="459.8" cy="189.9" r="4.40"/>
+    <circle class="node-a" cx="102.9" cy="237.7" r="4.40"/>
+    <circle class="node-a" cx="287.3" cy="349.9" r="4.40"/>
+    <circle class="node-a" cx="326.4" cy="362.0" r="4.40"/>
+    <circle class="node-a" cx="132.3" cy="94.3" r="4.40"/>
+    <circle class="node-a" cx="342.4" cy="309.4" r="4.83"/>
+    <circle class="node-a" cx="299.1" cy="293.7" r="4.83"/>
+    <circle class="node-a" cx="105.5" cy="159.1" r="4.83"/>
+    <circle class="node-a" cx="170.6" cy="107.2" r="4.83"/>
+    <circle class="node-b" cx="412.4" cy="129.7" r="5.24"/>
+    <circle class="node-a" cx="191.1" cy="272.9" r="5.24"/>
+    <circle class="node-a" cx="315.5" cy="269.0" r="5.24"/>
+    <circle class="node-a" cx="297.2" cy="96.2" r="5.62"/>
+    <circle class="node-a" cx="279.0" cy="288.9" r="5.62"/>
+    <circle class="node-b" cx="354.6" cy="106.9" r="5.62"/>
+    <circle class="node-b" cx="393.8" cy="197.1" r="5.62"/>
+    <circle class="node-a" cx="186.2" cy="62.4" r="5.62"/>
+    <circle class="node-a" cx="258.4" cy="192.5" r="5.99"/>
+    <circle class="halo" cx="345.6" cy="176.1" r="14.6"/>
+    <circle class="node-b" cx="345.6" cy="176.1" r="6.35"/>
+    <circle class="halo" cx="353.0" cy="201.9" r="16.2"/>
+    <circle class="node-b" cx="353.0" cy="201.9" r="7.04"/>
+    <circle class="halo" cx="326.0" cy="127.3" r="18.4"/>
+    <circle class="node-b" cx="326.0" cy="127.3" r="8.00"/>
+    <circle class="halo" cx="207.5" cy="198.9" r="18.4"/>
+    <circle class="node-a" cx="207.5" cy="198.9" r="8.00"/>
+  </g>
+</svg>
+        <p class="muted" style="font-size:var(--fs-xs);margin-top:.75rem;text-align:center">
+          <span data-lang="en">A growing network with in-group preference: the minority (amber) ends up under-represented among the hubs.</span>
+          <span data-lang="ko" hidden>내집단 선호가 있는 성장 네트워크. 소수집단(주황)은 허브에서 과소 대표됩니다.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="home.researchTitle">Research themes</h2>
+        <a class="more" href="research.html" data-i18n="cta.more">See all →</a>
+      </div>
+      <div class="cards" data-themes></div>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="home.recentTitle">Recent publications</h2>
+        <a class="more" href="publications.html" data-i18n="cta.more">See all →</a>
+      </div>
+      <div data-recent-pubs></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div style="max-width:52rem">
+        <div class="section-head">
+          <h2 data-i18n="home.newsTitle">News</h2>
+          <a class="more" href="news.html" data-i18n="cta.more">See all →</a>
+        </div>
+        <ul class="news" data-news></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="wrap"><div class="prose">
+      <h2 data-i18n="home.joinTitle" style="font-size:var(--fs-xl);margin-bottom:.75rem">Work with us</h2>
+      <p class="lede" data-lang="en">
+        We take students who want to make a social question precise enough to be wrong about.
+        You do not need a physics degree; you do need to be willing to write code and to read
+        outside your field.
+      </p>
+      <p class="lede" data-lang="ko" hidden>
+        사회적 질문을 “틀릴 수 있을 만큼” 정밀하게 만들고 싶은 학생을 환영합니다. 물리학 학위가
+        필요하지는 않지만, 코드를 쓰고 자기 분야 밖의 글을 읽을 의지는 필요합니다.
+      </p>
+      <p style="margin-top:1.5rem">
+        <a class="btn btn--primary" href="contact.html" data-i18n="cta.join">Join the lab</a>
+      </p>
+    </div></div>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER — identical on every page ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer__grid">
+      <div>
+        <h4 data-i18n="site.name">COMPASS Lab</h4>
+        <p style="white-space:pre-line;margin:0" data-site-address></p>
+      </div>
+      <div>
+        <h4 data-i18n="footer.contact">Contact</h4>
+        <ul>
+          <li><a data-site-email href="#">email</a></li>
+          <li><a data-site-link="scholar" href="#" target="_blank" rel="noopener" data-i18n="cta.scholar">Google Scholar</a></li>
+          <li><a data-site-link="linkedin" href="#" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a data-site-link="github" href="#" target="_blank" rel="noopener" data-i18n="cta.github">GitHub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="footer.links">Links</h4>
+        <ul>
+          <li><a href="research.html" data-i18n="nav.research">Research</a></li>
+          <li><a href="publications.html" data-i18n="nav.publications">Publications</a></li>
+          <li><a href="people.html" data-i18n="nav.people">People</a></li>
+          <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer__base">
+      <span>© <span data-year>2026</span> COMPASS Lab · Pukyong National University</span>
+      <span data-i18n="footer.built">Built with plain HTML, CSS and JavaScript.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/bibtex.js"></script>
+<script src="assets/js/publications.js"></script>
+<script src="assets/js/content.js"></script>
+<script>
+Content.themes("[data-themes]", 8);
+Pub.recent("[data-recent-pubs]", 4);
+Content.news("[data-news]", 4);
+</script>
+</body>
 </html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin — COMPASS Lab</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='none' stroke='%231b4d89' stroke-width='3'/><circle cx='16' cy='16' r='4' fill='%231b4d89'/></svg>">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="wordmark" href="index.html">
+      <span class="mark" aria-hidden="true">C</span>
+      <span>COMPASS <span class="sub">admin</span></span>
+    </a>
+    <nav class="site-nav" id="nav">
+      <ul>
+        <li><a href="index.html">← 사이트로</a></li>
+        <li><a href="people.html">People</a></li>
+        <li><a href="publications.html">Publications</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="admin-shell" id="main">
+  <h1 style="font-size:var(--fs-xl);margin-bottom:.4rem">사이트 관리</h1>
+  <p class="admin-note" style="margin-bottom:1.5rem">
+    구성원·소식·논문 목록을 폼으로 편집합니다. 편집 결과는 브라우저 안에만 있고,
+    아래 버튼으로 <strong>파일을 내려받아 커밋</strong>하거나 <strong>GitHub에 바로 저장</strong>할 수 있습니다.
+  </p>
+
+  <div class="warn">
+    <strong>보안 안내.</strong> 이 페이지는 GitHub Pages에 올라가면 누구나 열 수 있습니다.
+    하지만 토큰 없이는 아무것도 저장되지 않으므로 편집 화면만 보일 뿐입니다.
+    토큰은 브라우저에만 저장되며 어디로도 전송되지 않습니다(GitHub API 제외).
+    걱정되면 <code>admin.html</code>과 <code>assets/js/admin.js</code>를
+    <code>.gitignore</code>에 넣고 로컬에서만 실행하세요.
+  </div>
+
+  <!-- ---------- tabs ---------- -->
+  <div class="admin-tabs" role="tablist">
+    <button type="button" data-tab="people" aria-selected="true">구성원</button>
+    <button type="button" data-tab="news" aria-selected="false">소식</button>
+    <button type="button" data-tab="bib" aria-selected="false">논문 (.bib)</button>
+    <button type="button" data-tab="github" aria-selected="false">GitHub 연결</button>
+  </div>
+
+  <div id="panel-people"></div>
+  <div id="panel-news" hidden></div>
+  <div id="panel-bib" hidden></div>
+
+  <!-- ---------- GitHub panel ---------- -->
+  <div id="panel-github" hidden>
+    <div class="fields" style="max-width:44rem">
+      <div class="field"><label>Owner</label><input id="gh-owner" placeholder="eunlee-netsci"></div>
+      <div class="field"><label>Repository</label><input id="gh-repo" placeholder="CompassLab"></div>
+      <div class="field"><label>Branch</label><input id="gh-branch" placeholder="main"></div>
+      <div class="field field--wide">
+        <label>Personal access token (Contents: Read and write)</label>
+        <input id="gh-token" type="password" placeholder="github_pat_…" autocomplete="off">
+      </div>
+      <div class="field field--wide">
+        <label style="display:flex;gap:.5rem;align-items:center;text-transform:none;letter-spacing:0">
+          <input type="checkbox" id="gh-remember" style="width:auto">
+          이 브라우저에 토큰 기억 (체크 안 하면 탭을 닫을 때 사라짐)
+        </label>
+      </div>
+      <div class="field field--wide">
+        <label>커밋 메시지</label>
+        <input id="gh-msg" value="Update site data via admin">
+      </div>
+      <div class="field field--wide">
+        <button class="btn btn--sm" type="button" id="gh-forget">저장된 토큰 지우기</button>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:2rem">
+      <h3 style="font-size:var(--fs-md);margin-bottom:.5rem">토큰 만드는 법</h3>
+      <ol style="font-size:var(--fs-sm);color:var(--ink-2)">
+        <li>GitHub → Settings → Developer settings → Personal access tokens → <strong>Fine-grained tokens</strong></li>
+        <li>Repository access: <strong>Only select repositories</strong> → <code>CompassLab</code>만 선택</li>
+        <li>Permissions → Repository permissions → <strong>Contents: Read and write</strong> (다른 권한은 불필요)</li>
+        <li>만료 기간을 짧게 두고, 만료되면 새로 발급하세요.</li>
+      </ol>
+      <p class="admin-note">
+        토큰을 쓰기 싫으면 각 탭의 “내려받기”로 파일을 받아 리포지토리에 직접 올리면 됩니다.
+        결과는 완전히 같습니다.
+      </p>
+    </div>
+  </div>
+
+  <!-- ---------- sticky action bar ---------- -->
+  <div class="admin-bar">
+    <span class="admin-note" id="dirty">변경 없음</span>
+    <span class="admin-note" id="busy"></span>
+    <span class="spacer"></span>
+
+    <button class="btn btn--sm" type="button" data-download="people" data-panel="people">people.json 내려받기</button>
+    <button class="btn btn--sm" type="button" data-copy="people" data-panel="people">JSON 복사</button>
+    <button class="btn btn--sm btn--primary" type="button" data-save="people" data-panel="people">GitHub에 저장</button>
+
+    <button class="btn btn--sm" type="button" data-download="news" data-panel="news" hidden>news.json 내려받기</button>
+    <button class="btn btn--sm" type="button" data-copy="news" data-panel="news" hidden>JSON 복사</button>
+    <button class="btn btn--sm btn--primary" type="button" data-save="news" data-panel="news" hidden>GitHub에 저장</button>
+
+    <button class="btn btn--sm" type="button" data-download="bib" data-panel="bib" hidden>.bib 내려받기</button>
+    <button class="btn btn--sm" type="button" data-copy="bib" data-panel="bib" hidden>.bib 복사</button>
+    <button class="btn btn--sm btn--primary" type="button" data-save="bib" data-panel="bib" hidden>GitHub에 저장</button>
+  </div>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/bibtex.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

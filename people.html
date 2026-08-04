@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>People — COMPASS Lab</title>
+<meta name="description" content="Members of COMPASS Lab at Pukyong National University.">
+<meta property="og:title" content="People — COMPASS Lab">
+<meta property="og:description" content="Members of COMPASS Lab at Pukyong National University.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='none' stroke='%231b4d89' stroke-width='3'/><circle cx='16' cy='16' r='4' fill='%231b4d89'/></svg>">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ===== HEADER — identical on every page; tools/sync_shell.py keeps them in sync ===== -->
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="wordmark" href="index.html">
+      <span class="mark" aria-hidden="true">C</span>
+      <span>COMPASS <span class="sub">Pukyong Nat’l Univ.</span></span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav" data-i18n-label="nav.menu">☰</button>
+    <nav class="site-nav" id="nav">
+      <ul>
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="research.html" data-i18n="nav.research">Research</a></li>
+        <li><a href="publications.html" data-i18n="nav.publications">Publications</a></li>
+        <li><a href="people.html" data-i18n="nav.people">People</a></li>
+        <li><a href="teaching.html" data-i18n="nav.teaching">Teaching</a></li>
+        <li><a href="news.html" data-i18n="home.newsTitle">News</a></li>
+        <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-set-lang="ko" aria-pressed="false">KO</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div data-people></div>
+
+  <section class="section section--soft">
+    <div class="wrap"><div class="prose">
+      <h2 style="font-size:var(--fs-xl);margin-bottom:.75rem" data-i18n="home.joinTitle">Work with us</h2>
+      <p class="lede" data-lang="en">
+        Undergraduate and graduate students are welcome to get in touch at any time. Tell us which
+        research theme interests you and one thing you have built or analysed before.
+      </p>
+      <p class="lede" data-lang="ko" hidden>
+        학부생·대학원생 모두 언제든 연락 주세요. 관심 있는 연구 주제와, 이전에 만들거나 분석해 본
+        것 한 가지를 함께 적어 주시면 좋습니다.
+      </p>
+      <p style="margin-top:1.5rem">
+        <a class="btn btn--primary" data-site-email href="#">email</a>
+      </p>
+    </div></div>
+  </section>
+</main>
+
+<!-- ===== FOOTER — identical on every page ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer__grid">
+      <div>
+        <h4 data-i18n="site.name">COMPASS Lab</h4>
+        <p style="white-space:pre-line;margin:0" data-site-address></p>
+      </div>
+      <div>
+        <h4 data-i18n="footer.contact">Contact</h4>
+        <ul>
+          <li><a data-site-email href="#">email</a></li>
+          <li><a data-site-link="scholar" href="#" target="_blank" rel="noopener" data-i18n="cta.scholar">Google Scholar</a></li>
+          <li><a data-site-link="linkedin" href="#" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a data-site-link="github" href="#" target="_blank" rel="noopener" data-i18n="cta.github">GitHub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="footer.links">Links</h4>
+        <ul>
+          <li><a href="research.html" data-i18n="nav.research">Research</a></li>
+          <li><a href="publications.html" data-i18n="nav.publications">Publications</a></li>
+          <li><a href="people.html" data-i18n="nav.people">People</a></li>
+          <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer__base">
+      <span>© <span data-year>2026</span> COMPASS Lab · Pukyong National University</span>
+      <span data-i18n="footer.built">Built with plain HTML, CSS and JavaScript.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/content.js"></script>
+<script>
+Content.people("[data-people]");
+</script>
+</body>
+</html>

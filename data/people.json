@@ -1,0 +1,229 @@
+{
+  "_comment": "People page data. Edit here, or use admin.html for a form-based editor with add/delete/reorder. Any text field accepts a plain string or {\"en\": …, \"ko\": …}. layout: lead | grid | list.",
+  "groups": [
+    {
+      "id": "pi",
+      "title": {
+        "en": "Principal Investigator",
+        "ko": "책임교수"
+      },
+      "layout": "lead",
+      "people": [
+        {
+          "name": "Eun Lee",
+          "nameKo": "이 은",
+          "role": {
+            "en": "Associate Professor, Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과 부교수"
+          },
+          "photo": "assets/img/people/outline_eun.png",
+          "bio": {
+            "en": "Ph.D. in Network Science, Sungkyunkwan University (2018). B.S. in Information Communication, Ewha Womans University (2007). Works on network science and computational social science — how the structure of social systems shapes what their members can perceive, and who gets which opportunities.",
+            "ko": "성균관대학교 네트워크 과학 박사(2018), 이화여자대학교 정보통신학과 학사(2007). 네트워크 과학과 계산사회과학을 연구합니다. 사회 시스템의 구조가 그 구성원이 무엇을 인식할 수 있는지, 그리고 누구에게 어떤 기회가 돌아가는지를 어떻게 결정하는지에 관심이 있습니다."
+          },
+          "email": "eunlee@pknu.ac.kr",
+          "office": {
+            "en": "C24 room 7413 · (+82) 51-629-4515",
+            "ko": "자연과학2관(C24) 7413호 · 내선 4515"
+          },
+          "links": [
+            {
+              "label": "Google Scholar",
+              "url": "https://scholar.google.com/citations?user=kXggWVUAAAAJ"
+            },
+            {
+              "label": "LinkedIn",
+              "url": "https://www.linkedin.com/in/eun-lee-8956aa53/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "grad",
+      "title": {
+        "en": "Graduate Students",
+        "ko": "대학원생"
+      },
+      "layout": "grid",
+      "people": [
+        {
+          "name": "Chihyun Park",
+          "nameKo": "박치현",
+          "role": {
+            "en": "Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과"
+          },
+          "photo": "assets/img/people/pic_chihyun.png",
+          "interests": {
+            "en": "Relations between professors and postdocs",
+            "ko": "교수와 박사후연구원의 관계"
+          },
+          "hobby": {
+            "en": "Games, walking my dog Allu",
+            "ko": "게임, 반려견 알루와 산책"
+          },
+          "links": [
+            {
+              "label": "GitHub",
+              "url": ""
+            }
+          ]
+        },
+        {
+          "name": "Jin Gyeong Won",
+          "nameKo": "진경원",
+          "role": {
+            "en": "Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과"
+          },
+          "photo": "assets/img/people/gyeong_won.png",
+          "interests": {
+            "en": "Social issues, HCI",
+            "ko": "사회문제 및 이슈, HCI"
+          },
+          "hobby": {
+            "en": "Bass, writing, games, badminton",
+            "ko": "베이스 연주, 글쓰기, 게임, 배드민턴"
+          },
+          "links": [
+            {
+              "label": "GitHub",
+              "url": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "undergrad",
+      "title": {
+        "en": "Undergraduate Students",
+        "ko": "학부연구생"
+      },
+      "layout": "grid",
+      "people": [
+        {
+          "name": "Jiyu Park",
+          "nameKo": "박지유",
+          "role": {
+            "en": "B.S., Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과 학사과정"
+          },
+          "photo": "assets/img/people/outline_jiyou.png",
+          "interests": {
+            "en": "Social inequality, ambiguous correlations — analysing things everyone senses but cannot explain",
+            "ko": "사회 불평등이나 모호한 상관관계 분석, 사람들이 만연하게 알지만 이유를 정확히 알지 못하는 것들"
+          },
+          "hobby": {
+            "en": "Musicals, planning, calculus study group",
+            "ko": "뮤지컬 관람, 계획 짜기, 미적분 스터디"
+          },
+          "links": [
+            {
+              "label": "GitHub",
+              "url": ""
+            }
+          ]
+        },
+        {
+          "name": "Yoona Jang",
+          "nameKo": "장유나",
+          "role": {
+            "en": "B.S., Dept. of Big Data Convergence",
+            "ko": "빅데이터융합전공 학사과정"
+          },
+          "photo": "assets/img/people/Yoona_Jang.png",
+          "interests": {
+            "en": "Spatial statistical analysis",
+            "ko": "공간 통계 분석"
+          },
+          "hobby": {
+            "en": "Mystery novels, cycling",
+            "ko": "추리소설 읽기, 자전거"
+          },
+          "links": []
+        },
+        {
+          "name": "Sangheon Park",
+          "nameKo": "박상헌",
+          "role": {
+            "en": "B.S., Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과 학사과정"
+          },
+          "photo": "assets/img/people/Sanghun_Park.png",
+          "interests": {
+            "en": "Complex networks, percolation theory, structural robustness of the connectome",
+            "ko": "복잡계 네트워크, 퍼콜레이션 이론, 커넥톰의 구조적 견고성 분석"
+          },
+          "hobby": {
+            "en": "Music, films",
+            "ko": "음악 감상, 영화 보기"
+          },
+          "links": []
+        },
+        {
+          "name": "Jaewon Lee",
+          "nameKo": "이재원",
+          "role": {
+            "en": "B.S., Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과 학사과정"
+          },
+          "photo": "assets/img/people/JW_Lee.png",
+          "interests": {
+            "en": "Assorted data analysis (classified)",
+            "ko": "다양한 데이터 분석 (비밀)"
+          },
+          "hobby": {
+            "en": "Gym, travel, films",
+            "ko": "헬스, 여행, 영화감상"
+          },
+          "links": []
+        }
+      ]
+    },
+    {
+      "id": "alumni",
+      "title": {
+        "en": "Previous Members",
+        "ko": "이전 구성원"
+      },
+      "layout": "list",
+      "people": [
+        {
+          "name": "Hyeonmin Roh",
+          "nameKo": "노현민",
+          "role": {
+            "en": "B.S., Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과 학사과정"
+          },
+          "note": {
+            "en": "on military leave",
+            "ko": "군휴학 중"
+          },
+          "interests": {
+            "en": "Academic inbreeding, social inequality",
+            "ko": "학문적 순혈주의, 사회 불평등"
+          },
+          "email": "202210637@pknu.ac.kr"
+        },
+        {
+          "name": "Eun Seo Lee",
+          "nameKo": "이은서",
+          "role": {
+            "en": "B.S., Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과 학사과정"
+          },
+          "note": {
+            "en": "minor in satellite information",
+            "ko": "부전공 위성정보"
+          },
+          "interests": {
+            "en": "Travel data, mobility",
+            "ko": "여행 데이터, 이동성"
+          }
+        }
+      ]
+    }
+  ]
+}
