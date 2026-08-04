@@ -10,8 +10,7 @@ window.SITE = {
   labAuthors: [
     "Eun Lee",
     "Chihyun Park", "Jin Gyeong Won",
-    "Jiyu Park", "Sunmin Lim", "Yoona Jang", "Sangheon Park", "Jaewon Lee",
-    "Hyeonmin Roh", "Eun Seo Lee"
+    "Jiyu Park", "Sangheon Park", "Jaewon Lee", "Hyeonmin Roh"
   ],
 
   /* Author name style in publication lists: "full" or "initials" */

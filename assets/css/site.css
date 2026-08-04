@@ -665,7 +665,6 @@ mark {
   width: 100%;
   aspect-ratio: 1 / 1;
   border-radius: var(--radius-lg);
-  background: var(--bg-sunken);   /* only shows for the initials fallback */
   object-fit: cover;
   margin-bottom: 0.85rem;
   display: grid;
@@ -674,6 +673,15 @@ mark {
   font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+}
+
+/* no photo yet: a quiet placeholder rather than a grey plate, so it sits
+   next to the transparent line portraits without shouting */
+div.person__photo {
+  border: 1px dashed var(--rule-strong);
+  background: none;
+  color: var(--ink-3);
+  opacity: 0.75;
 }
 .person h3 { font-size: var(--fs-base); margin-bottom: 0.1rem; }
 .person .role { font-size: var(--fs-xs); color: var(--accent); font-weight: 600; letter-spacing: 0.02em; }

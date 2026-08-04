@@ -51,8 +51,8 @@
           "name": "Chihyun Park",
           "nameKo": "박치현",
           "role": {
-            "en": "Dept. of Scientific Computing",
-            "ko": "과학컴퓨팅학과"
+            "en": "MS student, Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과 석사과정"
           },
           "photo": "assets/img/people/pic_chihyun.png",
           "interests": {
@@ -74,8 +74,8 @@
           "name": "Jin Gyeong Won",
           "nameKo": "진경원",
           "role": {
-            "en": "Dept. of Scientific Computing",
-            "ko": "과학컴퓨팅학과"
+            "en": "MS student, Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과 석사과정"
           },
           "photo": "assets/img/people/gyeong_won.png",
           "interests": {
@@ -127,24 +127,6 @@
           ]
         },
         {
-          "name": "Yoona Jang",
-          "nameKo": "장유나",
-          "role": {
-            "en": "B.S., Dept. of Big Data Convergence",
-            "ko": "빅데이터융합전공 학사과정"
-          },
-          "photo": "assets/img/people/Yoona_Jang.png",
-          "interests": {
-            "en": "Spatial statistical analysis",
-            "ko": "공간 통계 분석"
-          },
-          "hobby": {
-            "en": "Mystery novels, cycling",
-            "ko": "추리소설 읽기, 자전거"
-          },
-          "links": []
-        },
-        {
           "name": "Sangheon Park",
           "nameKo": "박상헌",
           "role": {
@@ -179,6 +161,19 @@
             "ko": "헬스, 여행, 영화감상"
           },
           "links": []
+        },
+        {
+          "name": "Hyeonmin Roh",
+          "nameKo": "노현민",
+          "role": {
+            "en": "B.S., Dept. of Scientific Computing",
+            "ko": "과학컴퓨팅학과 학사과정"
+          },
+          "interests": {
+            "en": "Academic inbreeding, social inequality",
+            "ko": "학문적 순혈주의, 사회 불평등"
+          },
+          "email": "202210637@pknu.ac.kr"
         }
       ]
     },
@@ -189,41 +184,7 @@
         "ko": "이전 구성원"
       },
       "layout": "list",
-      "people": [
-        {
-          "name": "Hyeonmin Roh",
-          "nameKo": "노현민",
-          "role": {
-            "en": "B.S., Dept. of Scientific Computing",
-            "ko": "과학컴퓨팅학과 학사과정"
-          },
-          "note": {
-            "en": "on military leave",
-            "ko": "군휴학 중"
-          },
-          "interests": {
-            "en": "Academic inbreeding, social inequality",
-            "ko": "학문적 순혈주의, 사회 불평등"
-          },
-          "email": "202210637@pknu.ac.kr"
-        },
-        {
-          "name": "Eun Seo Lee",
-          "nameKo": "이은서",
-          "role": {
-            "en": "B.S., Dept. of Scientific Computing",
-            "ko": "과학컴퓨팅학과 학사과정"
-          },
-          "note": {
-            "en": "minor in satellite information",
-            "ko": "부전공 위성정보"
-          },
-          "interests": {
-            "en": "Travel data, mobility",
-            "ko": "여행 데이터, 이동성"
-          }
-        }
-      ]
+      "people": []
     }
   ]
 }
