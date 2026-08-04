@@ -101,7 +101,10 @@ Zotero / Mendeley / Google Scholar에서 내보낸 `.bib`를 통째로 덮어써
 - 유형·주제 필터, 대표 논문만 보기, 최신순/오래된순
 - 필터 상태가 URL에 남아 링크 공유 가능 — 예: `publications.html?tag=perception%20bias`
 - 항목별 BibTeX 복사, 필터된 목록 전체 복사, `.bib` 내려받기
-- 연구실 구성원 이름 자동 굵게 (`config.js`의 `labAuthors`, 성 + 이름 첫 글자로 매칭)
+- 저자 이름 자동 굵게 — 현재 `Eun Lee`만 (`config.js`의 `labAuthors`)
+  - 성 + **이름 전체**가 같아야 굵어집니다. 구성원을 더 넣고 싶으면 배열에 추가하세요.
+  - `.bib`에 이름이 약자로 적힌 경우(`Lee, E.`)에만 첫 글자 매칭을 허용합니다.
+  - 성만 적으면(`"Lee"`) 그 성을 가진 모든 저자가 굵어집니다.
 
 ---
 

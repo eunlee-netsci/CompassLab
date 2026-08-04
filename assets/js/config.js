@@ -5,13 +5,11 @@ window.SITE = {
   /* Where the publication list comes from. Keep a single .bib. */
   bibPath: "data/publications.bib",
 
-  /* Surnames rendered in bold in every author list.
-     Add every current and former lab member. */
-  labAuthors: [
-    "Eun Lee",
-    "Chihyun Park", "Jin Gyeong Won",
-    "Jiyu Park", "Sangheon Park", "Jaewon Lee", "Hyeonmin Roh"
-  ],
+  /* Names rendered in bold in every author list.
+     Matching is surname + full given name, so "Jiyu Park" would not also
+     bold "Jong-Min Park". Add more names here to highlight them too;
+     a bare surname ("Lee") bolds every author with that surname. */
+  labAuthors: ["Eun Lee"],
 
   /* Author name style in publication lists: "full" or "initials" */
   authorStyle: "full",

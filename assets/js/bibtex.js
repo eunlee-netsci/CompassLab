@@ -355,29 +355,50 @@
    *   opts.max     collapse to "et al." past this count (0 = never)
    * Returns HTML.
    */
-  /* "Eun Lee" -> "lee|e" ; "Lee" -> "lee" (surname-only match) */
-  function nameKey(first, last) {
-    var l = String(last || "").toLowerCase().trim();
-    var f = String(first || "").trim();
-    return f ? l + "|" + f[0].toLowerCase() : l;
+  /* ---- author highlighting -------------------------------------------
+     Matching is on the FULL given name, not just its initial:
+     "Jiyu Park" must not light up "Jong-Min Park". Initials are only
+     accepted when the .bib itself abbreviates ("Lee, E."), because then
+     there is nothing more specific to compare against.                  */
+
+  function letters(s) { return String(s || "").toLowerCase().replace(/[^a-z]/g, ""); }
+
+  /* "E.", "E", "H.-H." -> true ; "Eun", "Jong-Min" -> false */
+  function isAbbrev(first) {
+    var toks = String(first || "").split(/[\s.\-]+/).filter(Boolean);
+    return toks.length > 0 && toks.every(function (t) { return t.length === 1; });
   }
+
+  function splitName(raw) {
+    var t = String(raw).trim();
+    if (!t) return null;
+    if (t.indexOf(",") > -1) {
+      var seg = t.split(",");
+      return { last: seg[0].trim(), first: seg.slice(1).join(",").trim() };
+    }
+    var w = t.split(/\s+/);
+    return { last: w[w.length - 1], first: w.slice(0, -1).join(" ") };
+  }
+
   function parseHighlight(list) {
-    var set = {};
+    var H = { full: {}, init: {}, lastOnly: {} };
     (list || []).forEach(function (raw) {
-      var t = String(raw).trim();
-      if (!t) return;
-      var last, first = "";
-      if (t.indexOf(",") > -1) {
-        var seg = t.split(",");
-        last = seg[0].trim(); first = seg.slice(1).join(",").trim();
-      } else {
-        var w = t.split(/\s+/);
-        last = w[w.length - 1];
-        first = w.slice(0, -1).join(" ");
-      }
-      set[nameKey(first, last)] = true;
+      var n = splitName(raw);
+      if (!n) return;
+      var l = letters(n.last), f = letters(n.first);
+      if (!f) { H.lastOnly[l] = true; return; }          // "Lee" -> any Lee
+      H.full[l + "|" + f] = true;
+      H.init[l + "|" + f[0]] = true;                      // for abbreviated .bib entries
     });
-    return set;
+    return H;
+  }
+
+  function isHighlighted(H, first, last) {
+    var l = letters(last), f = letters(first);
+    if (H.lastOnly[l]) return true;
+    if (!f) return false;
+    if (H.full[l + "|" + f]) return true;
+    return isAbbrev(first) ? !!H.init[l + "|" + f[0]] : false;
   }
 
   function formatAuthors(entry, opts) {
@@ -392,8 +413,8 @@
         ? initials(a.first) + " " + a.last
         : a.full;
       var esc = escapeHtml(name);
-      var isLab = hi[nameKey(a.first, a.last)] || hi[String(a.last).toLowerCase()];
-      return isLab ? '<span class="me">' + esc + "</span>" : esc;
+      return isHighlighted(hi, a.first, a.last)
+        ? '<span class="me">' + esc + "</span>" : esc;
     }).join(", ");
 
     if (max && list.length > max) html += ", et al.";
