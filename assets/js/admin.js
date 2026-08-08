@@ -20,6 +20,7 @@
   var STATE = {
     people: null,
     news: null,
+    activities: null,
     bib: "",
     dirty: {},
     tab: "people"
@@ -28,6 +29,7 @@
   var FILES = {
     people: "data/people.json",
     news: "data/news.json",
+    activities: "data/activities.json",
     bib: "data/publications.bib"
   };
 
@@ -341,6 +343,59 @@
     box.appendChild(foot);
   }
 
+
+  /* ------------------------------------------------ ACTIVITIES tab */
+  function renderActivities() {
+    var box = $("#panel-activities");
+    box.innerHTML = "";
+    var items = STATE.activities || [];
+    items.forEach(function (a, i) {
+      var card = el("div", { class: "grp" });
+      card.innerHTML =
+        '<div class="grp__head"><strong style="font-size:var(--fs-sm)">' + (i + 1) + "</strong>" +
+          '<input data-a="' + i + '" data-f="name.ko" placeholder="이름 (KO)" value="' +
+            S.escape(bi(a.name).ko) + '">' +
+          '<input data-a="' + i + '" data-f="since" placeholder="YYYY-MM" value="' +
+            S.escape(a.since || "") + '" style="max-width:8rem">' +
+          '<label style="display:flex;gap:.3rem;align-items:center;font-size:var(--fs-xs);color:var(--ink-3)">' +
+            '<input type="checkbox" data-a="' + i + '" data-f="ongoing" style="width:auto"' +
+            (a.ongoing ? " checked" : "") + "> 진행 중</label>" +
+          '<span style="flex:1"></span>' +
+          '<button class="iconbtn" data-op="aup" data-a="' + i + '">↑</button>' +
+          '<button class="iconbtn" data-op="adown" data-a="' + i + '">↓</button>' +
+          '<button class="iconbtn iconbtn--danger" data-op="adel" data-a="' + i + '">🗑</button>' +
+        "</div>" +
+        '<div class="grp__body"><div class="fields">' +
+          f(i, "name.en", "Name (EN)", bi(a.name).en) +
+          f(i, "kind.en", "Kind (EN)", bi(a.kind).en) +
+          f(i, "kind.ko", "종류 (KO)", bi(a.kind).ko) +
+          f(i, "role.en", "Role (EN)", bi(a.role).en) +
+          f(i, "role.ko", "역할 (KO)", bi(a.role).ko) +
+          f(i, "cadence.en", "Frequency (EN)", bi(a.cadence).en) +
+          f(i, "cadence.ko", "주기 (KO)", bi(a.cadence).ko) +
+          f(i, "with", "Organizers / 주관진", a.with || "") +
+          f(i, "link", "Link", a.link || "") +
+          f(i, "linkLabel.en", "Link label (EN)", bi(a.linkLabel).en) +
+          f(i, "linkLabel.ko", "링크 문구 (KO)", bi(a.linkLabel).ko) +
+          ta(i, "text.en", "Description (EN)", bi(a.text).en) +
+          ta(i, "text.ko", "설명 (KO)", bi(a.text).ko) +
+        "</div></div>";
+      box.appendChild(card);
+    });
+    var foot = el("div", { style: "margin-top:1rem" });
+    foot.innerHTML = '<button class="btn btn--sm" data-op="aadd">＋ 활동 추가</button>';
+    box.appendChild(foot);
+
+    function f(i, key, label, val) {
+      return '<div class="field"><label>' + label + "</label>" +
+        '<input data-a="' + i + '" data-f="' + key + '" value="' + S.escape(val || "") + '"></div>';
+    }
+    function ta(i, key, label, val) {
+      return '<div class="field field--wide"><label>' + label + "</label>" +
+        '<textarea data-a="' + i + '" data-f="' + key + '">' + S.escape(val || "") + "</textarea></div>";
+    }
+  }
+
   /* ------------------------------------------------ BIB tab */
   function renderBib() {
     var box = $("#panel-bib");
@@ -363,6 +418,7 @@
     $$("[data-panel]").forEach(function (b) { b.hidden = b.dataset.panel !== name; });
     if (name === "people") renderPeople();
     if (name === "news") renderNews();
+    if (name === "activities") renderActivities();
     if (name === "bib") renderBib();
   }
 
@@ -371,9 +427,10 @@
     Promise.all([
       S.fetchJSON(FILES.people).catch(function () { return { groups: [] }; }),
       S.fetchJSON(FILES.news).catch(function () { return []; }),
+      S.fetchJSON(FILES.activities).catch(function () { return []; }),
       S.fetchText(FILES.bib).catch(function () { return ""; })
     ]).then(function (r) {
-      STATE.people = r[0]; STATE.news = r[1]; STATE.bib = r[2];
+      STATE.people = r[0]; STATE.news = r[1]; STATE.activities = r[2]; STATE.bib = r[3];
       showTab("people");
       renderStatus();
     }).catch(function (e) { S.loadError($("#panel-people"), e); });
@@ -405,8 +462,8 @@
     if (t.dataset.download) {
       var w = t.dataset.download;
       if (w === "bib") download("publications.bib", STATE.bib);
-      else download(w === "people" ? "people.json" : "news.json",
-        JSON.stringify(cleanFor(w), null, 2) + "\n", "application/json");
+      else download(w + ".json", JSON.stringify(cleanFor(w), null, 2) + "\n",
+        "application/json");
       return;
     }
     if (t.dataset.copy) {
@@ -452,6 +509,20 @@
       per.__open = !per.__open;
       renderPeople(); return;
     }
+    if (op === "aadd") {
+      STATE.activities.push({ name: { en: "", ko: "" }, role: { en: "", ko: "" }, ongoing: true });
+      markDirty("activities"); renderActivities(); return;
+    }
+    if (op === "adel") {
+      if (!confirm("이 활동을 삭제할까요?")) return;
+      STATE.activities.splice(+t.dataset.a, 1); markDirty("activities"); renderActivities(); return;
+    }
+    if (op === "aup" || op === "adown") {
+      if (move(STATE.activities, +t.dataset.a, op === "aup" ? -1 : 1)) {
+        markDirty("activities"); renderActivities();
+      }
+      return;
+    }
     if (op === "nadd") {
       STATE.news.unshift({ date: new Date().toISOString().slice(0, 10),
         title: { en: "", ko: "" }, text: { en: "", ko: "" } });
@@ -493,6 +564,13 @@
       return;
     }
 
+    if (t.dataset.a !== undefined && t.dataset.f) {
+      var av = t.type === "checkbox" ? t.checked : t.value;
+      setField(STATE.activities[+t.dataset.a], t.dataset.f, av);
+      markDirty("activities");
+      return;
+    }
+
     if (t.dataset.n !== undefined && t.dataset.f) {
       setField(STATE.news[+t.dataset.n], t.dataset.f, t.value);
       markDirty("news");
@@ -501,6 +579,11 @@
 
   function onChange(ev) {
     var t = ev.target;
+    if (t.dataset.a !== undefined && t.dataset.f === "ongoing") {
+      STATE.activities[+t.dataset.a].ongoing = t.checked;
+      markDirty("activities");
+      return;
+    }
     if (t.dataset.op === "pmove" && t.value !== "") {
       var groups = STATE.people.groups;
       var from = +t.dataset.g, pi = +t.dataset.p, to = +t.value;

@@ -186,6 +186,50 @@
   }
 
 
+
+  /* ---------- Activities ---------- */
+  function activities(sel) {
+    var box = S.$(sel);
+    if (!box) return;
+    S.fetchJSON("data/activities.json").then(function (items) {
+      function paint() {
+        var lang = global.I18n ? I18n.lang : "en";
+        box.innerHTML = "";
+        if (!items.length) {
+          box.innerHTML = '<p class="muted">—</p>';
+          return;
+        }
+        items.forEach(function (a) {
+          var meta = [];
+          if (a.role) meta.push([T("act.role"), S.pick(a.role, lang)]);
+          if (a.since) meta.push([T("act.since"), fmtDate(a.since, lang) +
+            (a.ongoing ? " – " + T("act.ongoing") : "")]);
+          if (a.cadence) meta.push([T("act.cadence"), S.pick(a.cadence, lang)]);
+          if (a.with) meta.push([T("act.with"), a.with]);
+
+          var node = S.el("article", { class: "activity" });
+          node.innerHTML =
+            '<div class="activity__head">' +
+              "<h2>" + S.escape(S.pick(a.name, lang)) + "</h2>" +
+              (a.kind ? '<p class="activity__kind">' + S.escape(S.pick(a.kind, lang)) + "</p>" : "") +
+            "</div>" +
+            '<dl class="activity__meta">' +
+              meta.map(function (m) {
+                return "<dt>" + S.escape(m[0]) + "</dt><dd>" + S.escape(m[1]) + "</dd>";
+              }).join("") +
+            "</dl>" +
+            (a.text ? '<p class="activity__text">' + S.escape(S.pick(a.text, lang)) + "</p>" : "") +
+            (a.link ? '<p style="margin:0"><a class="btn btn--sm" href="' + S.escape(a.link) +
+              '" target="_blank" rel="noopener">' +
+              S.escape(S.pick(a.linkLabel, lang) || T("act.visit")) + " ↗</a></p>" : "");
+          box.appendChild(node);
+        });
+      }
+      paint();
+      if (global.I18n) I18n.onChange(paint);
+    }).catch(function (e) { S.loadError(box, e); });
+  }
+
   /* ---------- Research themes (from config.js + publications.bib) ---------- */
   function themeList() { return (global.SITE && global.SITE.themes) || []; }
 
@@ -267,5 +311,6 @@
   }
 
   global.Content = { news: news, people: people, teaching: teaching,
+                     activities: activities,
                      themes: themes, themeBlocks: themeBlocks };
 })(window);

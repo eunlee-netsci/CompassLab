@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>People — COMPASS Lab</title>
-<meta name="description" content="Members of COMPASS Lab at Pukyong National University.">
-<meta property="og:title" content="People — COMPASS Lab">
-<meta property="og:description" content="Members of COMPASS Lab at Pukyong National University.">
+<title>Activities — COMPASS Lab</title>
+<meta name="description" content="Seminars, meetings and community activities organised by COMPASS Lab, Pukyong National University.">
+<meta property="og:title" content="Activities — COMPASS Lab">
+<meta property="og:description" content="Seminars, meetings and community activities organised by COMPASS Lab.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='none' stroke='%231b4d89' stroke-width='3'/><circle cx='16' cy='16' r='4' fill='%231b4d89'/></svg>">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -43,27 +43,28 @@
 </header>
 
 <main id="main">
-  <div data-people></div>
+  <section class="section section--tight">
+    <div class="wrap">
+      <p class="eyebrow" data-i18n="nav.activities">Activities</p>
+      <h1 style="font-size:var(--fs-2xl);margin-bottom:.8rem" data-i18n="act.title">Activities</h1>
+      <p class="lede prose" data-lang="en">
+        Seminars and meetings the lab organises or helps run — the parts of research that
+        never show up in a publication list.
+      </p>
+      <p class="lede prose" data-lang="ko" hidden>
+        연구실이 주관하거나 함께 운영하는 세미나와 모임입니다. 논문 목록에는 드러나지 않는
+        연구의 다른 축입니다.
+      </p>
+    </div>
+  </section>
 
-  <section class="section section--soft">
-    <div class="wrap"><div class="prose">
-      <h2 style="font-size:var(--fs-xl);margin-bottom:.75rem" data-i18n="home.joinTitle">Work with us</h2>
-      <p class="lede" data-lang="en">
-        Undergraduate and graduate students are welcome to get in touch at any time. Tell us which
-        research theme interests you and one thing you have built or analysed before.
-      </p>
-      <p class="lede" data-lang="ko" hidden>
-        학부생·대학원생 모두 언제든 연락 주세요. 관심 있는 연구 주제와, 이전에 만들거나 분석해 본
-        것 한 가지를 함께 적어 주시면 좋습니다.
-      </p>
-      <p style="margin-top:1.5rem">
-        <a class="btn btn--primary" data-site-email href="#">email</a>
-      </p>
-    </div></div>
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div data-activities></div>
+    </div>
   </section>
 </main>
 
-<!-- ===== FOOTER — identical on every page ===== -->
 <footer class="site-footer">
   <div class="wrap">
     <div class="site-footer__grid">
@@ -97,12 +98,11 @@
   </div>
 </footer>
 
+
 <script src="assets/js/config.js?v=20260808"></script>
 <script src="assets/js/i18n.js?v=20260808"></script>
 <script src="assets/js/site.js?v=20260808"></script>
 <script src="assets/js/content.js?v=20260808"></script>
-<script>
-Content.people("[data-people]");
-</script>
+<script>Content.activities("[data-activities]");</script>
 </body>
 </html>

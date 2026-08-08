@@ -1,0 +1,24 @@
+[
+  {
+    "id": "pgsh",
+    "name": {
+      "en": "PuGyeongSan-Hoe (부경상회)",
+      "ko": "부경상회 (PuGyeongSan-Hoe)"
+    },
+    "kind": {
+      "en": "Regional monthly meeting on complex systems",
+      "ko": "복잡계 지역 월례 모임"
+    },
+    "role": { "en": "Co-organizer", "ko": "공동 주관" },
+    "since": "2025-04",
+    "ongoing": true,
+    "cadence": { "en": "Monthly", "ko": "월 1회" },
+    "with": "Eun Lee (PKNU) · Mi Jin Lee (PNU) · Sang Hoon Lee (GNU)",
+    "text": {
+      "en": "A monthly gathering of complex-systems researchers in the Busan–Ulsan–Gyeongnam region. Each session pairs two or three talks — students and faculty alike — followed by open discussion. Past talks are archived on the meeting site.",
+      "ko": "부산·울산·경남 지역의 복잡계 연구자들이 매달 모여 발표하고 토론하는 자리입니다. 매 회 두세 편의 발표가 이어지며, 학생과 교수 구분 없이 발표합니다. 지난 발표는 모임 홈페이지의 아카이브에서 볼 수 있습니다."
+    },
+    "link": "https://sites.google.com/view/bug-pgsh/",
+    "linkLabel": { "en": "Site & talk archive", "ko": "홈페이지 · 발표 아카이브" }
+  }
+]

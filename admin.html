@@ -7,7 +7,7 @@
 <title>Admin — COMPASS Lab</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='none' stroke='%231b4d89' stroke-width='3'/><circle cx='16' cy='16' r='4' fill='%231b4d89'/></svg>">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="assets/css/site.css?v=20260804a">
+<link rel="stylesheet" href="assets/css/site.css?v=20260808">
 </head>
 <body>
 
@@ -46,12 +46,14 @@
   <div class="admin-tabs" role="tablist">
     <button type="button" data-tab="people" aria-selected="true">구성원</button>
     <button type="button" data-tab="news" aria-selected="false">소식</button>
+    <button type="button" data-tab="activities" aria-selected="false">활동</button>
     <button type="button" data-tab="bib" aria-selected="false">논문 (.bib)</button>
     <button type="button" data-tab="github" aria-selected="false">GitHub 연결</button>
   </div>
 
   <div id="panel-people"></div>
   <div id="panel-news" hidden></div>
+  <div id="panel-activities" hidden></div>
   <div id="panel-bib" hidden></div>
 
   <!-- ---------- GitHub panel ---------- -->
@@ -108,16 +110,20 @@
     <button class="btn btn--sm" type="button" data-copy="news" data-panel="news" hidden>JSON 복사</button>
     <button class="btn btn--sm btn--primary" type="button" data-save="news" data-panel="news" hidden>GitHub에 저장</button>
 
+    <button class="btn btn--sm" type="button" data-download="activities" data-panel="activities" hidden>activities.json 내려받기</button>
+    <button class="btn btn--sm" type="button" data-copy="activities" data-panel="activities" hidden>JSON 복사</button>
+    <button class="btn btn--sm btn--primary" type="button" data-save="activities" data-panel="activities" hidden>GitHub에 저장</button>
+
     <button class="btn btn--sm" type="button" data-download="bib" data-panel="bib" hidden>.bib 내려받기</button>
     <button class="btn btn--sm" type="button" data-copy="bib" data-panel="bib" hidden>.bib 복사</button>
     <button class="btn btn--sm btn--primary" type="button" data-save="bib" data-panel="bib" hidden>GitHub에 저장</button>
   </div>
 </main>
 
-<script src="assets/js/config.js?v=20260804a"></script>
-<script src="assets/js/i18n.js?v=20260804a"></script>
-<script src="assets/js/site.js?v=20260804a"></script>
-<script src="assets/js/bibtex.js?v=20260804a"></script>
-<script src="assets/js/admin.js?v=20260804a"></script>
+<script src="assets/js/config.js?v=20260808"></script>
+<script src="assets/js/i18n.js?v=20260808"></script>
+<script src="assets/js/site.js?v=20260808"></script>
+<script src="assets/js/bibtex.js?v=20260808"></script>
+<script src="assets/js/admin.js?v=20260808"></script>
 </body>
 </html>

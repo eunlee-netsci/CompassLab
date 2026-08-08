@@ -909,3 +909,36 @@ img.person__photo { background: none; }
   padding: .8rem 1rem; border-radius: var(--radius); font-size: var(--fs-sm);
   color: var(--ink-2); margin-bottom: 1.25rem;
 }
+
+/* ---------- 15. Activities ---------- */
+.activity {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 1.6rem;
+  max-width: 46rem;
+}
+.activity + .activity { margin-top: 1.25rem; }
+.activity__head { margin-bottom: 1rem; }
+.activity h2 { font-size: var(--fs-lg); margin-bottom: .25rem; }
+.activity__kind { font-size: var(--fs-sm); color: var(--accent); font-weight: 600; margin: 0; }
+.activity__meta {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: .3rem 1rem;
+  margin: 0 0 1rem;
+  font-size: var(--fs-sm);
+}
+.activity__meta dt {
+  color: var(--ink-3);
+  font-size: var(--fs-xs);
+  font-weight: 620;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding-top: .12rem;
+}
+.activity__meta dd { margin: 0; color: var(--ink-2); }
+.activity__text { font-size: var(--fs-sm); color: var(--ink-2); line-height: 1.7; }
+@media (max-width: 520px) {
+  .activity__meta { grid-template-columns: 1fr; gap: 0 0; }
+  .activity__meta dd { margin-bottom: .5rem; }
+}
