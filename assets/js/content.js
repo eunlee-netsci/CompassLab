@@ -202,9 +202,15 @@
         items.forEach(function (a) {
           var meta = [];
           if (a.role) meta.push([T("act.role"), S.pick(a.role, lang)]);
-          if (a.since) meta.push([T("act.since"), fmtDate(a.since, lang) +
-            (a.ongoing ? " – " + T("act.ongoing") : "")]);
+          if (a.when) {                                   // one-off event
+            meta.push([T("act.when"), S.pick(a.when, lang)]);
+          } else if (a.since) {                           // recurring / ongoing
+            meta.push([T("act.since"), fmtDate(a.since, lang) +
+              (a.ongoing ? " – " + T("act.ongoing") : "")]);
+          }
           if (a.cadence) meta.push([T("act.cadence"), S.pick(a.cadence, lang)]);
+          if (a.where) meta.push([T("act.where"), S.pick(a.where, lang)]);
+          if (a.host) meta.push([T("act.host"), S.pick(a.host, lang)]);
           if (a.with) meta.push([T("act.with"), a.with]);
 
           var node = S.el("article", { class: "activity" });

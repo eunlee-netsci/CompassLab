@@ -373,6 +373,12 @@
           f(i, "role.ko", "역할 (KO)", bi(a.role).ko) +
           f(i, "cadence.en", "Frequency (EN)", bi(a.cadence).en) +
           f(i, "cadence.ko", "주기 (KO)", bi(a.cadence).ko) +
+          f(i, "when.en", "When (EN) — 1회성 행사", bi(a.when).en) +
+          f(i, "when.ko", "일시 (KO)", bi(a.when).ko) +
+          f(i, "where.en", "Venue (EN)", bi(a.where).en) +
+          f(i, "where.ko", "장소 (KO)", bi(a.where).ko) +
+          f(i, "host.en", "Host (EN)", bi(a.host).en) +
+          f(i, "host.ko", "주최 (KO)", bi(a.host).ko) +
           f(i, "with", "Organizers / 주관진", a.with || "") +
           f(i, "link", "Link", a.link || "") +
           f(i, "linkLabel.en", "Link label (EN)", bi(a.linkLabel).en) +

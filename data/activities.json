@@ -1,5 +1,43 @@
 [
   {
+    "id": "scisci-korea-2026",
+    "name": {
+      "en": "3rd SCI-SCI Korea Workshop (2026)",
+      "ko": "제3회 SCI-SCI Korea 워크숍 (2026)"
+    },
+    "kind": {
+      "en": "Science-of-science workshop",
+      "ko": "과학의 과학 워크숍"
+    },
+    "role": {
+      "en": "Organizing committee",
+      "ko": "공동 운영진"
+    },
+    "when": {
+      "en": "Friday, 11 September 2026",
+      "ko": "2026년 9월 11일(금)"
+    },
+    "where": {
+      "en": "Yonsei University · The Commons (Baekyang Nuri), Seoul",
+      "ko": "연세대학교 백양누리 (서울)"
+    },
+    "host": {
+      "en": "CLIO Institute for Social Development, Yonsei University",
+      "ko": "연세대학교 사회발전연구소(CLIO)"
+    },
+    "with": "Donghyun Kang (Yonsei) · Taegyoon Kim (KAIST) · Eun Lee (PKNU) · Seungryul Ryan Shin (UNIST) · Seokkyun Woo (KAIST) · Jisung Yoon (KDI School) · June Jeon (KAIST)",
+    "ongoing": false,
+    "text": {
+      "en": "A one-day workshop on the science of science — how scientific knowledge is produced, circulates, and meets policy and society. The 2026 programme pairs a keynote and panel with four parallel sessions: Position and Recognition, Science Beyond the Academy, Architectures of Knowledge, and The New Substitutions.",
+      "ko": "과학의 과학(science of science)을 주제로 하는 하루짜리 워크숍입니다. 과학 지식이 어떻게 생산되고 유통되며 정책·사회와 만나는지를 다룹니다. 2026년 프로그램은 기조강연과 패널 토론에 더해 네 개의 병렬 세션(Position and Recognition, Science Beyond the Academy, Architectures of Knowledge, The New Substitutions)으로 구성됩니다."
+    },
+    "link": "https://sites.google.com/view/sci-sci-korea-2026/",
+    "linkLabel": {
+      "en": "Workshop site & programme",
+      "ko": "워크숍 홈페이지 · 프로그램"
+    }
+  },
+  {
     "id": "pgsh",
     "name": {
       "en": "PuGyeongSan-Hoe (부경상회)",
@@ -9,16 +47,25 @@
       "en": "Regional monthly meeting on complex systems",
       "ko": "복잡계 지역 월례 모임"
     },
-    "role": { "en": "Co-organizer", "ko": "공동 주관" },
+    "role": {
+      "en": "Co-organizer",
+      "ko": "공동 주관"
+    },
     "since": "2025-04",
     "ongoing": true,
-    "cadence": { "en": "Monthly", "ko": "월 1회" },
+    "cadence": {
+      "en": "Monthly",
+      "ko": "월 1회"
+    },
     "with": "Eun Lee (PKNU) · Mi Jin Lee (PNU) · Sang Hoon Lee (GNU)",
     "text": {
       "en": "A monthly gathering of complex-systems researchers in the Busan–Ulsan–Gyeongnam region. Each session pairs two or three talks — students and faculty alike — followed by open discussion. Past talks are archived on the meeting site.",
       "ko": "부산·울산·경남 지역의 복잡계 연구자들이 매달 모여 발표하고 토론하는 자리입니다. 매 회 두세 편의 발표가 이어지며, 학생과 교수 구분 없이 발표합니다. 지난 발표는 모임 홈페이지의 아카이브에서 볼 수 있습니다."
     },
     "link": "https://sites.google.com/view/bug-pgsh/",
-    "linkLabel": { "en": "Site & talk archive", "ko": "홈페이지 · 발표 아카이브" }
+    "linkLabel": {
+      "en": "Site & talk archive",
+      "ko": "홈페이지 · 발표 아카이브"
+    }
   }
 ]
