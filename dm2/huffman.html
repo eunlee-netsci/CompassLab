@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>호프만 코드 단계별 실행</title>
+<style>
+  :root{
+    --ink:#1F2A30; --mut:#5A6672; --line:#CBD8DF;
+    --leafbg:#E8F2F6; --leafbd:#2E7D8F; --leafink:#14343F;
+    --midbg:#FBE3CE;  --midbd:#E8823A;  --midink:#8A3A12;
+    --hot:#C4341B; --warm:#D4761A; --teal:#1A5F72;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#F4F7F9;color:var(--ink);}
+  body{font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;}
+  .wrap{max-width:1560px;margin:0 auto;padding:18px 18px 26px;}
+  .mono{font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace;}
+
+  header{margin-bottom:12px;}
+  h1{font-size:24px;font-weight:800;color:var(--hot);margin:0 0 3px;letter-spacing:-0.5px;}
+  .sub{font-size:14px;color:var(--mut);margin:0 0 11px;}
+  .sub b{color:var(--teal);}
+  .exrow{display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
+  .exrow .tag{font-size:12.5px;color:var(--mut);font-weight:700;margin:0 2px 0 0;}
+  .exrow .sep{width:1px;height:22px;background:var(--line);margin:0 7px;}
+  button.ex{font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;
+            border:2px solid var(--line);background:#fff;color:var(--mut);cursor:pointer;}
+  button.ex:hover{border-color:var(--midbd);color:var(--midink);}
+  button.ex.on{background:var(--teal);border-color:var(--teal);color:#fff;}
+
+  .main{display:flex;gap:16px;align-items:stretch;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;}
+  .codecol{flex:0 0 612px;display:flex;flex-direction:column;}
+  .stage{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;}
+
+  .tabs{display:flex;gap:6px;padding:10px 12px 0;}
+  button.tab{font:inherit;font-size:13px;font-weight:700;padding:6px 13px;border-radius:8px 8px 0 0;
+             border:2px solid transparent;border-bottom:none;background:#EEF3F6;color:var(--mut);cursor:pointer;}
+  button.tab.on{background:#fff;border-color:var(--line);color:var(--teal);}
+  .codebody{flex:1;padding:8px 12px 14px;border-top:1px solid var(--line);margin-top:-1px;overflow:auto;}
+
+  .ln{font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+      font-size:12.9px;line-height:1.5;white-space:pre-wrap;padding:1px 7px;border-radius:5px;
+      border-left:3px solid transparent;transition:background .12s,border-color .12s;}
+  .ln.blank{height:8px;padding:0;}
+  .ln.dim{color:#8A97A0;}
+  .ln.on{background:#FFF3E2;border-left-color:var(--warm);}
+  .ln.on2{background:#FFF9F0;border-left-color:#F0C89A;}
+  .ln .n{color:var(--warm);font-weight:700;}
+  .ln .k{color:#9B3FBF;font-weight:700;}
+  .ln .f{color:#1A6FA8;font-weight:700;}
+  .ln .s{color:var(--hot);}
+  .ln .c{color:#8A97A0;}
+  .ln .b{background:#FFE9C9;color:#8A3A12;font-weight:700;border-radius:3px;}
+  .sechead{font-size:12px;font-weight:800;color:var(--teal);letter-spacing:.3px;
+           padding:9px 7px 3px;border-top:1px dashed #DCE6EB;margin-top:5px;}
+  .sechead:first-child{border-top:none;margin-top:0;}
+
+  .panel{padding:11px 13px 13px;}
+  .panel h3{margin:0 0 8px;font-size:13px;font-weight:800;color:var(--teal);
+            display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .panel h3 span.hint{font-size:11.5px;font-weight:600;color:#93A1AA;text-align:right;}
+
+  .chips{display:flex;gap:7px;flex-wrap:wrap;align-items:center;min-height:40px;}
+  .chip{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:14.5px;font-weight:700;
+        padding:5px 11px;border-radius:7px;border:2px solid;}
+  .chip.leaf{background:var(--leafbg);border-color:var(--leafbd);color:var(--leafink);}
+  .chip.mid {background:var(--midbg); border-color:var(--midbd); color:var(--midink);}
+  .chip.pick{box-shadow:0 0 0 3px rgba(232,130,58,.55);}
+  .chip.fresh{border-style:dashed;}
+  .tail{font-size:12px;color:#93A1AA;font-weight:700;white-space:nowrap;}
+
+  .stk{display:flex;flex-direction:column;gap:5px;min-height:40px;}
+  .fr{display:flex;gap:9px;align-items:baseline;font-family:"SFMono-Regular",Menlo,Consolas,monospace;
+      font-size:13.4px;padding:5px 10px;border-radius:7px;background:#F3F7F9;border:1px solid #DCE6EB;color:#44535C;}
+  .fr.top{background:#FFF3E2;border-color:var(--midbd);color:#6B3B18;font-weight:700;}
+  .fr .lv{color:#9FB0B9;flex:0 0 auto;}
+  .fr .sig{flex:1;min-width:0;}
+  .fr .dd{flex:0 0 auto;color:var(--midink);}
+  .fr.top .dd{color:#8A3A12;}
+
+  .treebox{flex:1;min-height:250px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .treebox svg{max-width:100%;max-height:100%;}
+  svg text{font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace;}
+  .nd-leaf{fill:var(--leafbg);stroke:var(--leafbd);stroke-width:2.2;}
+  .nd-mid {fill:var(--midbg); stroke:var(--midbd); stroke-width:2.2;}
+  .nd-pick{stroke-width:4;}
+  .nd-act {stroke:var(--hot);stroke-width:4;}
+  .edge{stroke:#7F929C;stroke-width:2.2;fill:none;}
+  .edge.lit{stroke:var(--hot);stroke-width:3.4;}
+  .elab{font-size:14px;font-weight:700;fill:var(--warm);}
+  .ntxt{font-size:15px;font-weight:800;text-anchor:middle;}
+  .nbadge{font-size:13.5px;font-weight:800;fill:var(--hot);text-anchor:middle;}
+  .ncode{font-size:13px;font-weight:800;fill:#2E7D8F;text-anchor:middle;}
+
+  .dict{display:flex;gap:7px;flex-wrap:wrap;min-height:38px;align-items:center;}
+  .dc{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:14.5px;font-weight:700;
+      padding:4px 10px;border-radius:7px;background:#EDF3F6;border:2px solid #BBD0D9;color:#14343F;}
+  .dc.hi{background:#FFEFD9;border-color:var(--midbd);color:var(--midink);}
+  .empty{font-size:13px;color:#A7B4BC;}
+
+  footer{margin-top:12px;}
+  .ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  button.b{font:inherit;font-size:13.5px;font-weight:700;padding:7px 13px;border-radius:8px;
+           border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;min-width:42px;}
+  button.b:hover:not(:disabled){border-color:var(--midbd);color:var(--midink);}
+  button.b:disabled{opacity:.38;cursor:default;}
+  button.b.play{background:var(--teal);border-color:var(--teal);color:#fff;}
+  button.b.play:hover{background:#15505f;color:#fff;}
+  .count{font-size:13px;font-weight:700;color:var(--mut);font-variant-numeric:tabular-nums;
+         min-width:96px;text-align:center;}
+  input[type=range]{flex:1;min-width:140px;accent-color:#1A5F72;}
+  select{font:inherit;font-size:13px;padding:6px 9px;border-radius:8px;border:2px solid var(--line);
+         background:#fff;color:var(--ink);}
+  .msg{margin-top:10px;padding:10px 13px;border-radius:10px;background:#fff;
+       border:1px solid var(--line);border-left:5px solid var(--warm);font-size:14.5px;line-height:1.5;min-height:44px;}
+  .msg b{color:var(--midink);}
+  .msg code{font-family:"SFMono-Regular",Menlo,Consolas,monospace;background:#EDF3F6;
+            padding:1px 5px;border-radius:4px;font-size:.94em;color:#1A3A48;}
+  .foot{margin-top:8px;font-size:12px;color:#93A1AA;line-height:1.55;}
+  .foot b{color:#B0651F;}
+
+  @media (max-width:1180px){ .main{flex-direction:column;} .codecol{flex:none;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>호프만 코드 — 코드와 트리를 나란히 따라가기 <span style="font-size:15px;color:#5A6672;font-weight:700;">학생용</span></h1>
+    <p class="sub">가지 비트는 <b>왼쪽 '0' · 오른쪽 '1'</b>. 코드의 <b style="background:#FFE9C9;color:#8A3A12;padding:0 4px;border-radius:3px;">주황 빈칸</b>은 실습에서 직접 채우는 자리입니다 — 여기서는 <b>그 줄이 무슨 일을 하는지</b>만 따라가세요.</p>
+    <div class="exrow"><span class="tag">예제</span>
+      <button class="ex on" data-ex="lec">강의 예제 BCAADDDCCACACAC</button>
+      <button class="ex" data-ex="tbl">교재 빈도표 a~f</button>
+      <button class="ex" data-ex="miss">MISSISSIPPI</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <section class="card codecol">
+      <div class="tabs">
+        <button class="tab on" data-tab="py">실제 파이썬 코드</button>
+        <button class="tab" data-tab="ps">수도코드</button>
+      </div>
+      <div class="codebody" id="codebody"></div>
+    </section>
+
+    <section class="stage">
+      <div class="card panel">
+        <h3><span id="topTitle">리스트 (노드, 빈도)</span><span class="hint" id="topHint">왼쪽 = 큰 빈도 … 오른쪽 = 작은 빈도 (맨 뒤에서 꺼낸다)</span></h3>
+        <div class="chips" id="chips"></div>
+        <div class="stk" id="stk" style="display:none;"></div>
+      </div>
+      <div class="card panel" style="flex:1;display:flex;flex-direction:column;">
+        <h3>트리<span class="hint">가지 위 숫자 = 그 가지를 지날 때 붙는 비트 · 잎 아래 = 확정된 코드</span></h3>
+        <div class="treebox" id="tree"></div>
+      </div>
+      <div class="card panel">
+        <h3><span>확정된 코드 (반환되어 d 에 합쳐진 것)</span><span class="hint" id="bits"></span></h3>
+        <div class="dict" id="dict"></div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="ctl">
+      <button class="b" id="first" title="처음으로">⏮</button>
+      <button class="b" id="prev" title="이전 단계 (←)">◀</button>
+      <button class="b play" id="play" title="자동 재생 (Space)">▶ 재생</button>
+      <button class="b" id="next" title="다음 단계 (→)">▶</button>
+      <button class="b" id="last" title="끝으로">⏭</button>
+      <span class="count" id="count">단계 1 / 1</span>
+      <input type="range" id="slider" min="0" max="0" value="0">
+      <select id="speed">
+        <option value="700">빠르게 0.7초</option>
+        <option value="1200" selected>보통 1.2초</option>
+        <option value="1800">느리게 1.8초</option>
+        <option value="2600">아주 느리게 2.6초</option>
+      </select>
+    </div>
+    <div class="msg" id="msg"></div>
+    <div class="foot">← → 키로 한 단계씩, Space 로 재생/일시정지. &nbsp;·&nbsp;
+      강의자료 p22 의 트리 그림은 가지 라벨이 <b>왼쪽 1 / 오른쪽 0</b> 으로 그려져 있어 코드 주석(왼쪽 0 / 오른쪽 1) 및 p23 출력과 어긋납니다 — 이 페이지는 <b>코드와 출력 기준</b>입니다.</div>
+  </footer>
+</div>
+
+<script>
+/* ═══════════ 코드 본문 ═══════════ */
+/* t = 완성 코드, b = 강의자료 빈칸판 (없으면 t 와 같음) */
+const PY = [
+  {sec:"NodeTree 클래스 — 인쇄 19쪽"},
+  {id:'r01', t:"<span class='k'>class</span> <span class='f'>NodeTree</span>(object):"},
+  {id:'r02', t:"    <span class='k'>def</span> <span class='f'>__init__</span>(self, left=<span class='k'>None</span>, right=<span class='k'>None</span>):"},
+  {id:'r03', t:"        self.left  = <span class='b'>___</span>"},
+  {id:'r04', t:"        self.right = <span class='b'>____</span>"},
+  {id:'r05', t:"    <span class='k'>def</span> <span class='f'>children</span>(self):"},
+  {id:'r06', t:"        <span class='k'>return</span> (self.left, self.right)"},
+
+  {sec:"빈도표를 정렬해서 nodes 만들기 — 인쇄 20쪽"},
+  {id:'r11', t:"nodes = freq        <span class='c'># [(글자, 빈도), ...]</span>"},
+  {id:'r12', t:"nodes = <span class='f'>sorted</span>(nodes, <span class='b'>___</span>, reverse=<span class='k'>True</span>)"},
+
+  {sec:"트리 합치기 — 인쇄 21쪽"},
+  {id:'r20', t:"<span class='k'>while</span> <span class='f'>len</span>(nodes) &gt; <span class='n'>1</span>:"},
+  {id:'r21', t:"    (key1, c1) = <span class='b'>_</span>   <span class='c'># 가장 작은 값과 그 빈도수를 얻음.</span>"},
+  {id:'r22', t:"    (key2, c2) = <span class='b'>_</span>   <span class='c'># 그 다음으로 작은 값</span>"},
+  {id:'r23', t:"    nodes = nodes[<span class='b'>__</span>]        <span class='c'># 선택한 값들은 없애기</span>"},
+  {id:'r24', t:"    node = <span class='f'>NodeTree</span>(key1, key2)  <span class='c'># 새 노드 (왼=key1, 오른=key2)</span>"},
+  {id:'r25', t:"    nodes.append(<span class='b'>_</span>)        <span class='c'># 새 노드와 빈도를 업데이트</span>"},
+  {id:'r26', t:"    nodes = <span class='f'>sorted</span>(nodes, <span class='b'>___</span>, reverse=<span class='k'>True</span>)  <span class='c'># 큰 -&gt; 작은</span>"},
+
+  {sec:"코드 붙이기 (재귀) — 인쇄 22쪽"},
+  {id:'r30', t:"<span class='k'>def</span> <span class='f'>huffman_code_tree</span>(node, left=<span class='k'>True</span>, binString=<span class='s'>''</span>):"},
+  {id:'r31', t:"    <span class='k'>if</span> <span class='f'>type</span>(node) <span class='k'>is</span> <span class='f'>str</span>:      <span class='c'># 잎이면</span>"},
+  {id:'r32', t:"        <span class='k'>return</span> {node: binString}   <span class='c'># 글자 1개짜리 dict</span>"},
+  {id:'r33', t:"    (l, r) = node.<span class='b'>___</span>      <span class='c'># 노드 클래스의 자녀를 받음.</span>"},
+  {id:'r34', t:"    d = <span class='f'>dict</span>()                   <span class='c'># 빈 딕셔너리로 시작</span>"},
+  {id:'r35', t:"    d.<span class='f'>update</span>(<span class='f'>huffman_code_tree</span>(<span class='b'>_</span>, <span class='b'>_</span> , binString + <span class='b'>__</span>))  <span class='c'># 왼쪽은 0</span>"},
+  {id:'r36', t:"    d.<span class='f'>update</span>(<span class='f'>huffman_code_tree</span>(<span class='b'>_</span>, <span class='b'>_</span>, binString + <span class='b'>__</span>))  <span class='c'># 오른쪽은 1</span>"},
+  {id:'r37', t:"    <span class='k'>return</span> d"},
+
+  {sec:"호출 — 인쇄 23쪽"},
+  {id:'r40', t:"huffmanCode = <span class='f'>huffman_code_tree</span>(nodes[<span class='n'>0</span>][<span class='n'>0</span>])"}
+];
+
+const PS = [
+  {id:'io1', cls:'dim', t:"Input : 문자들의 빈도표 freq_table"},
+  {id:'io2', cls:'dim', t:"Output: 문자별 이진 코드 딕셔너리"},
+  {blank:1},
+  {id:'s1',  t:"<span class='n'>1.</span> 각 문자를 (노드, 빈도) 쌍으로 만들어 리스트에 담는다"},
+  {id:'s2',  t:"<span class='n'>2.</span> 리스트를 빈도 기준 내림차순으로 정렬  <span class='c'>(큰 → 작은)</span>"},
+  {blank:1},
+  {id:'s3',  t:"<span class='n'>3.</span> <span class='k'>while</span> 리스트 길이 &gt; <span class='n'>1</span>:"},
+  {id:'s3a', t:"   <span class='n'>a.</span> 맨 뒤 두 개를 꺼낸다  <span class='c'>← 가장 작은 둘</span>"},
+  {id:'s3b', t:"   <span class='n'>b.</span> node = NodeTree(key1, key2)\n        <span class='c'>왼쪽 자식 = key1, 오른쪽 자식 = key2</span>"},
+  {id:'s3c', t:"   <span class='n'>c.</span> 새 노드와 합친 빈도를 한 쌍으로 리스트에 추가"},
+  {id:'s3d', t:"   <span class='n'>d.</span> 다시 내림차순으로 정렬"},
+  {blank:1},
+  {id:'s4',  t:"<span class='n'>4.</span> 남은 한 쌍의 노드가 Huffman Tree 의 루트"},
+  {blank:1},
+  {id:'s5',  t:"<span class='n'>5.</span> 루트부터 재귀로 내려가며 코드를 붙인다"},
+  {id:'s5a', t:"   <span class='c'>- 노드가 문자열이면 → 리프</span>\n        <span class='c'>{글자: 지금까지 모은 코드} 를 반환</span>"},
+  {id:'s5b', t:"   <span class='c'>- 아니면 자식 둘을 꺼내 왼쪽 → +</span><span class='s'>'0'</span><span class='c'>, 오른쪽 → +</span><span class='s'>'1'</span>\n        <span class='c'>로 재귀하고, 받은 딕셔너리 둘을 합친다</span>"},
+  {blank:1},
+  {id:'s6',  t:"<span class='n'>6.</span> 코드 딕셔너리 반환"}
+];
+
+/* 실제 코드 줄 ↔ 수도코드 줄 대응 */
+const PS_OF = {
+  r11:'s1', r12:'s2', r20:'s3', r21:'s3a', r22:'s3a', r23:'s3a', r24:'s3b', r25:'s3c', r26:'s3d',
+  r40:'s4', r30:'s5', r31:'s5a', r32:'s5a', r33:'s5b', r34:'s5b', r35:'s5b', r36:'s5b', r37:'s6',
+  r01:'s1', r02:'s1', r03:'s1', r04:'s1', r05:'s5b', r06:'s5b'
+};
+
+let TAB = 'py';
+function renderCode(){
+  const src = (TAB === 'py') ? PY : PS;
+  document.getElementById('codebody').innerHTML = src.map(l => {
+    if (l.sec)   return `<div class="sechead">${l.sec}</div>`;
+    if (l.blank) return `<div class="ln blank"></div>`;
+    const txt = l.t;
+    return `<div class="ln ${l.cls||''}" data-id="${l.id}">${txt}</div>`;
+  }).join('');
+}
+
+/* ═══════════ 예제 ═══════════ */
+const EXAMPLES = {
+  lec : {str:"BCAADDDCCACACAC"},
+  tbl : {table:[['a',43],['b',13],['c',12],['d',16],['e',9],['f',7]]},
+  miss: {str:"MISSISSIPPI"}
+};
+function freqOf(s){
+  const order=[], map=new Map();
+  for (const ch of s){ if(!map.has(ch)){ map.set(ch,0); order.push(ch); } map.set(ch,map.get(ch)+1); }
+  return order.map(ch => [ch, map.get(ch)]);
+}
+const fmt = d => '{' + Object.keys(d).map(k => `'${k}': '${d[k]}'`).join(', ') + '}';
+
+/* ═══════════ 실행 기록 ═══════════ */
+function buildTrace(pairs){
+  let uid = 0;
+  const leaf = (ch,f) => ({id:++uid, label:ch, f:f, leaf:true});
+  const mid  = (l,r,f) => ({id:++uid, label:String(f), f:f, leaf:false, left:l, right:r});
+  const sig  = n => n.leaf ? `'${n.label}'` : `(${n.f})`;
+
+  const steps = [];
+  let list = [], codes = {}, pick = [], fresh = null, stack = [], mode = 'list';
+
+  const snap = (line, msg, o) => {
+    o = o || {};
+    steps.push({
+      line  : Array.isArray(line) ? line : [line],
+      msg   : msg,
+      mode  : mode,
+      chips : list.map(p => ({id:p.n.id, label:p.n.label, f:p.f, leaf:p.n.leaf})),
+      forest: list.map(p => p.n),
+      codes : Object.assign({}, codes),
+      pick  : pick.slice(),
+      fresh : fresh,
+      stack : stack.map(fr => ({sig:sig(fr.node), code:fr.code, d:fr.d})),
+      act   : o.act || null,
+      litTo : o.litTo || null,
+      hiKeys: o.hiKeys || [],
+      done  : !!o.done
+    });
+  };
+
+  /* 1~2 : 리스트 만들고 정렬 */
+  list = pairs.map(([ch,f]) => ({n:leaf(ch,f), f:f}));
+  snap('r11', `빈도표의 문자 ${pairs.length}개가 <code>(글자, 빈도)</code> 튜플로 <code>nodes</code> 에 담겼다 — 아직 정렬 전이다.`);
+  list.sort((a,b) => b.f - a.f);
+  snap('r12', `<code>reverse=True</code> 라서 빈도 <b>큰 것부터</b> 정렬된다. 그래서 <b>리스트의 맨 뒤가 가장 작은 빈도</b>가 된다.`);
+
+  /* 3 : while 루프 */
+  let round = 0;
+  while (list.length > 1){
+    round++; pick = []; fresh = null;
+    snap('r20', `<code>len(nodes)</code> = <b>${list.length}</b> &gt; 1 → 반복을 한 번 더 돈다. (${round}회차)`);
+
+    const p1 = list[list.length-1], p2 = list[list.length-2];
+    pick = [p1.n.id, p2.n.id];
+    snap(['r21','r22'], `리스트의 맨 뒤 두 개를 꺼낸다 — <b>key1 = ${sig(p1.n)}</b>, c1 = ${p1.f} &nbsp;/&nbsp; <b>key2 = ${sig(p2.n)}</b>, c2 = ${p2.f}. 내림차순이므로 이 둘이 가장 작다.`);
+    snap('r23', `꺼낸 두 개를 리스트에서 지운다. 남은 것은 ${list.length-2}개.`);
+
+    const node = mid(p1.n, p2.n, p1.f + p2.f);
+    list = list.slice(0, -2).concat([{n:node, f:node.f}]);
+    pick = [node.id]; fresh = node.id;
+    snap('r24', `<code>NodeTree(key1, key2)</code> → <b>self.left = ${sig(p1.n)}</b> (더 작은 쪽), <b>self.right = ${sig(p2.n)}</b>. 두 그루가 한 그루로 합쳐졌다.`);
+    fresh = null;
+    snap('r25', `새 노드와 그 빈도(<b>${p1.f} + ${p2.f} = ${node.f}</b>)를 한 쌍으로 묶어 <code>nodes</code> 끝에 붙인다.`);
+    list.sort((a,b) => b.f - a.f);
+    const pos = list.findIndex(p => p.n.id === node.id) + 1;
+    snap('r26', `다시 내림차순 정렬 — 합친 노드(빈도 ${node.f})가 <b>${pos}번째</b>로 옮겨간다. 그래서 다음 회차에도 맨 뒤 둘이 가장 작은 둘이다.`);
+  }
+  pick = [];
+  snap('r20', `<code>len(nodes)</code> = <b>1</b> → 조건이 거짓이 되어 <code>while</code> 을 빠져나온다.`);
+
+  /* 4~5 : 재귀로 코드 붙이기 */
+  const root = list[0].n;
+  pick = [root.id];
+  snap('r40', `남은 한 쌍에서 <b>노드 쪽</b>을 꺼내면 그것이 루트다 (빈도 합 ${root.f}). 이것을 <code>huffman_code_tree</code> 에 넘긴다.`);
+  pick = []; mode = 'stack';
+
+  function walk(node, code){
+    stack.push({node:node, code:code, d:'—'});
+    const top = stack[stack.length-1];
+    const depth = stack.length;
+    snap('r30', `호출 ${depth}단계 — <code>huffman_code_tree(${sig(node)}, binString='${code}')</code>. ${node.leaf ? '인자가 문자열이다.' : '인자가 NodeTree 인스턴스다.'}`,
+         {act:node.id});
+
+    if (node.leaf){
+      codes[node.label] = code;
+      const ret = {}; ret[node.label] = code;
+      top.d = fmt(ret);
+      snap(['r31','r32'], `<code>type(node) is str</code> 가 <b>참</b> → <code>return {'${node.label}': '${code}'}</code>. 지금까지 모은 <code>binString</code> 이 그대로 그 글자의 코드가 된다.`,
+           {act:node.id, hiKeys:[node.label]});
+      stack.pop();
+      return ret;
+    }
+
+    top.d = '{}';
+    snap(['r33','r34'], `이 노드의 자녀 둘을 받아 <b>(l, r) = (${sig(node.left)}, ${sig(node.right)})</b> 로 두고, 빈 <code>d = dict()</code> 를 만든다.`,
+         {act:node.id});
+
+    const dl = walk(node.left, code + '0');
+    top.d = fmt(dl);
+    snap('r35', `왼쪽 재귀가 <code>${fmt(dl)}</code> 를 돌려줬다 → <code>d.update(...)</code> 로 합친다. 왼쪽 가지라서 코드 끝에 <b>'0'</b> 이 붙은 채로 내려갔었다.`,
+         {act:node.id, litTo:node.left.id, hiKeys:Object.keys(dl)});
+
+    const dr = walk(node.right, code + '1');
+    const all = Object.assign({}, dl, dr);
+    top.d = fmt(all);
+    snap('r36', `오른쪽 재귀가 <code>${fmt(dr)}</code> 를 돌려줬다 → 같은 <code>d</code> 에 합쳐 <code>${fmt(all)}</code> 가 됐다. 오른쪽 가지라서 <b>'1'</b>.`,
+         {act:node.id, litTo:node.right.id, hiKeys:Object.keys(dr)});
+
+    snap('r37', `이 호출은 <code>return d</code> — <b>${Object.keys(all).length}개 글자</b>의 코드를 한꺼번에 위로 돌려준다. 딕셔너리가 아래에서 위로 합쳐지며 커진다.`,
+         {act:node.id, hiKeys:Object.keys(all)});
+    stack.pop();
+    return all;
+  }
+  const final = walk(root, '');
+
+  mode = 'list';
+  const chars = pairs.reduce((s,[,f]) => s+f, 0);
+  const total = pairs.reduce((s,[ch,f]) => s + f * final[ch].length, 0);
+  snap('r40', `맨 바깥 호출이 돌려준 것이 <code>huffmanCode</code> = <code>${fmt(final)}</code>. 전체 ${chars}글자를 <b>${total}비트</b>로 (글자당 평균 ${(total/chars).toFixed(2)}비트).`,
+       {done:true});
+
+  return {steps:steps, total:total, chars:chars};
+}
+
+/* ═══════════ 트리 그리기 ═══════════ */
+const SLOT = 76, ROW = 72, NW = 60, NH = 32, PAD = 16, GAP = 0.68;
+function layout(forest){
+  let slot = 0, maxD = 0;
+  const nodes = [], edges = [];
+  forest.forEach(root => {
+    (function place(n, d){
+      if (d > maxD) maxD = d;
+      if (n.leaf){ n._x = slot; slot += 1; }
+      else { place(n.left, d+1); place(n.right, d+1); n._x = (n.left._x + n.right._x)/2; }
+      nodes.push({n:n, d:d});
+      if (!n.leaf){ edges.push([n, n.left, '0']); edges.push([n, n.right, '1']); }
+    })(root, 0);
+    slot += GAP;
+  });
+  return {nodes:nodes, edges:edges, maxD:maxD, span:Math.max(slot - GAP, 1)};
+}
+function svgFor(step, W, H){
+  const L = layout(step.forest);
+  const off = (W - L.span * SLOT) / 2;
+  const X = n => off + (n._x + 0.5) * SLOT;
+  const Y = d => PAD + d * ROW + NH/2 + 16;
+  const dep = new Map(L.nodes.map(o => [o.n.id, o.d]));
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">`;
+  L.edges.forEach(([p,c,bit]) => {
+    const x1 = X(p), y1 = Y(dep.get(p.id)) + NH/2, x2 = X(c), y2 = Y(dep.get(c.id)) - NH/2;
+    const lit = (step.litTo === c.id) ? ' lit' : '';
+    s += `<path class="edge${lit}" d="M${x1} ${y1} L${x2} ${y2}"/>`;
+    const mx = x1 + (x2-x1)*0.5 + (bit === '0' ? -14 : 12), my = y1 + (y2-y1)*0.5 - 3;
+    s += `<text class="elab" x="${mx}" y="${my}" text-anchor="middle">${bit}</text>`;
+  });
+  L.nodes.forEach(({n,d}) => {
+    const cx = X(n), cy = Y(d);
+    let cls = n.leaf ? 'nd-leaf' : 'nd-mid';
+    if (step.pick.indexOf(n.id) >= 0) cls += ' nd-pick';
+    if (step.act === n.id) cls += ' nd-act';
+    const dash = (step.fresh === n.id) ? ' stroke-dasharray="6 4"' : '';
+    s += `<rect class="${cls}"${dash} x="${cx-NW/2}" y="${cy-NH/2}" width="${NW}" height="${NH}" rx="8"/>`;
+    s += `<text class="ntxt" x="${cx}" y="${cy+5.5}" fill="${n.leaf?'#14343F':'#8A3A12'}">`
+       + `${n.leaf ? n.label + ' ' + n.f : n.f}</text>`;
+    if (n.leaf && step.codes[n.label] !== undefined)
+      s += `<text class="ncode" x="${cx}" y="${cy+NH/2+17}">'${step.codes[n.label]}'</text>`;
+    if (step.act === n.id && !n.leaf)
+      s += `<text class="nbadge" x="${cx}" y="${cy-NH/2-7}">binString='${stackCode(step,n.id)}'</text>`;
+  });
+  return s + '</svg>';
+}
+function stackCode(step, id){
+  const fr = step.stack[step.stack.length-1];
+  return fr ? fr.code : '';
+}
+
+/* ═══════════ 화면 ═══════════ */
+let TRACE = null, idx = 0, timer = null, W = 700, H = 320;
+function measure(){
+  W = 0; H = 0;
+  TRACE.steps.forEach(st => {
+    const L = layout(st.forest);
+    W = Math.max(W, L.span * SLOT);
+    H = Math.max(H, L.maxD * ROW + NH + PAD*2 + 42);
+  });
+  W = Math.round(W + PAD*2); H = Math.round(H);
+}
+
+function render(){
+  const st = TRACE.steps[idx];
+
+  document.querySelectorAll('.ln').forEach(el => el.classList.remove('on','on2'));
+  const ids = (TAB === 'py') ? st.line : st.line.map(i => PS_OF[i]).filter(Boolean);
+  const seen = {};
+  ids.forEach(id => { if (seen[id]) return; seen[id] = 1;
+    const e = document.querySelector(`.ln[data-id='${id}']`); if (e) e.classList.add('on'); });
+
+  const useStack = (st.mode === 'stack');
+  document.getElementById('topTitle').textContent = useStack ? '재귀 호출 스택 (huffman_code_tree)' : '리스트 (노드, 빈도)';
+  document.getElementById('topHint').textContent  = useStack
+      ? '각 줄 = 살아 있는 호출 하나 · 오른쪽은 그 호출의 d'
+      : '왼쪽 = 큰 빈도 … 오른쪽 = 작은 빈도 (맨 뒤에서 꺼낸다)';
+  document.getElementById('chips').style.display = useStack ? 'none' : 'flex';
+  document.getElementById('stk').style.display   = useStack ? 'flex' : 'none';
+
+  document.getElementById('chips').innerHTML =
+    st.chips.map(c => {
+      let k = 'chip ' + (c.leaf ? 'leaf' : 'mid');
+      if (st.pick.indexOf(c.id) >= 0) k += ' pick';
+      if (st.fresh === c.id) k += ' fresh';
+      return `<span class="${k}">${c.leaf ? c.label + ' ' : ''}${c.f}</span>`;
+    }).join('') + (st.chips.length > 1 ? `<span class="tail">← 맨 뒤</span>` : '');
+
+  document.getElementById('stk').innerHTML = st.stack.length
+    ? st.stack.map((f,i) => `<div class="fr${i === st.stack.length-1 ? ' top' : ''}">`
+        + `<span class="lv">${i+1}</span>`
+        + `<span class="sig">huffman_code_tree(${f.sig}, binString='${f.code}')</span>`
+        + `<span class="dd">d = ${f.d}</span></div>`).join('')
+    : `<span class="empty">호출 없음</span>`;
+
+  document.getElementById('tree').innerHTML = svgFor(st, W, H);
+
+  const ks = Object.keys(st.codes);
+  document.getElementById('dict').innerHTML = ks.length
+    ? ks.map(k => `<span class="dc${st.hiKeys.indexOf(k) >= 0 ? ' hi' : ''}">'${k}': '${st.codes[k]}'</span>`).join('')
+    : `<span class="empty">아직 비어 있음 — 잎에 닿아야 채워진다</span>`;
+  document.getElementById('bits').textContent = st.done ? `전체 ${TRACE.total}비트 / ${TRACE.chars}글자` : '';
+
+  document.getElementById('msg').innerHTML = st.msg;
+  document.getElementById('count').textContent = `단계 ${idx+1} / ${TRACE.steps.length}`;
+  document.getElementById('slider').value = idx;
+  document.getElementById('prev').disabled = document.getElementById('first').disabled = (idx === 0);
+  document.getElementById('next').disabled = document.getElementById('last').disabled = (idx === TRACE.steps.length-1);
+}
+
+function load(key){
+  const ex = EXAMPLES[key];
+  TRACE = buildTrace(ex.str ? freqOf(ex.str) : ex.table);
+  idx = 0; measure();
+  const sl = document.getElementById('slider');
+  sl.max = TRACE.steps.length - 1; sl.value = 0;
+  document.querySelectorAll('button.ex[data-ex]').forEach(b => b.classList.toggle('on', b.dataset.ex === key));
+  render();
+}
+function go(i){
+  idx = Math.max(0, Math.min(TRACE.steps.length-1, i));
+  render();
+  if (timer && idx === TRACE.steps.length-1) stop();
+}
+function stop(){ clearInterval(timer); timer = null; document.getElementById('play').textContent = '▶ 재생'; }
+function play(){
+  if (timer){ stop(); return; }
+  if (idx === TRACE.steps.length-1) idx = 0;
+  document.getElementById('play').textContent = '⏸ 일시정지';
+  timer = setInterval(() => go(idx+1), parseInt(document.getElementById('speed').value, 10));
+}
+
+document.getElementById('next').onclick  = () => { stop(); go(idx+1); };
+document.getElementById('prev').onclick  = () => { stop(); go(idx-1); };
+document.getElementById('first').onclick = () => { stop(); go(0); };
+document.getElementById('last').onclick  = () => { stop(); go(TRACE.steps.length-1); };
+document.getElementById('play').onclick  = play;
+document.getElementById('slider').oninput = e => { stop(); go(parseInt(e.target.value,10)); };
+document.getElementById('speed').onchange = () => { if (timer){ stop(); play(); } };
+document.querySelectorAll('button.ex[data-ex]').forEach(b => b.onclick = () => { stop(); load(b.dataset.ex); });
+document.querySelectorAll('button.tab').forEach(b => b.onclick = () => {
+  TAB = b.dataset.tab;
+  document.querySelectorAll('button.tab').forEach(x => x.classList.toggle('on', x === b));
+  renderCode(); render();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight'){ e.preventDefault(); stop(); go(idx+1); }
+  else if (e.key === 'ArrowLeft'){ e.preventDefault(); stop(); go(idx-1); }
+  else if (e.code === 'Space'){ e.preventDefault(); play(); }
+});
+
+renderCode();
+load('lec');
+document.body.setAttribute('data-ready','1');
+</script>
+</body>
+</html>
