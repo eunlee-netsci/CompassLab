@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>키패드 백트래킹 단계별 실행</title>
+<style>
+  :root{
+    --ink:#1F2A30; --mut:#5A6672; --line:#CBD8DF;
+    --leafbg:#E8F2F6; --leafbd:#2E7D8F; --leafink:#14343F;
+    --midbg:#FBE3CE;  --midbd:#E8823A;  --midink:#8A3A12;
+    --hot:#C4341B; --warm:#D4761A; --teal:#1A5F72;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#F4F7F9;color:var(--ink);}
+  body{font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;}
+  .wrap{max-width:1560px;margin:0 auto;padding:18px 18px 24px;}
+
+  header{margin-bottom:12px;}
+  h1{font-size:24px;font-weight:800;color:var(--hot);margin:0 0 3px;letter-spacing:-0.5px;}
+  h1 .tag{font-size:14px;font-weight:700;color:var(--mut);}
+  .sub{font-size:14px;color:var(--mut);margin:0 0 11px;}
+  .sub b{color:var(--teal);}
+  .sub .bl{background:#FFE9C9;color:#8A3A12;padding:0 5px;border-radius:3px;font-weight:700;}
+  .exrow{display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
+  .exrow .tag{font-size:12.5px;color:var(--mut);font-weight:700;margin-right:2px;}
+  button.ex{font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;
+            border:2px solid var(--line);background:#fff;color:var(--mut);cursor:pointer;}
+  button.ex:hover{border-color:var(--midbd);color:var(--midink);}
+  button.ex.on{background:var(--teal);border-color:var(--teal);color:#fff;}
+
+  .main{display:flex;gap:16px;align-items:stretch;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;}
+  .codecol{flex:0 0 580px;padding:14px 14px 16px;overflow:auto;}
+  .stage{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;}
+
+  .ln{font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+      font-size:13px;line-height:1.55;white-space:pre-wrap;padding:1px 7px;border-radius:5px;
+      border-left:3px solid transparent;transition:background .12s,border-color .12s;}
+  .ln.blank{height:9px;padding:0;}
+  .ln.on{background:#FFF3E2;border-left-color:var(--warm);}
+  .ln .k{color:#9B3FBF;font-weight:700;}
+  .ln .f{color:#1A6FA8;font-weight:700;}
+  .ln .s{color:var(--hot);}
+  .ln .n{color:#1A6FA8;}
+  .ln .c{color:#8A97A0;}
+  .ln .b{background:#FFE9C9;color:#8A3A12;font-weight:700;border-radius:3px;padding:0 2px;}
+
+  .panel{padding:11px 13px 13px;}
+  .panel h3{margin:0 0 8px;font-size:13px;font-weight:800;color:var(--teal);
+            display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .panel h3 span.hint{font-size:11.5px;font-weight:600;color:#93A1AA;}
+
+  .vars{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:9px;
+        font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:14px;}
+  .vars .v{display:flex;gap:6px;align-items:baseline;}
+  .vars .vn{font-weight:800;color:var(--teal);}
+  .vars .vv{font-weight:700;color:var(--midink);background:var(--midbg);
+            border:2px solid var(--midbd);border-radius:6px;padding:1px 9px;}
+  .vars .vv.dim{color:#8A97A0;background:#F3F7F9;border-color:#DCE6EB;}
+
+  .stk{display:flex;flex-direction:column;gap:4px;}
+  .fr{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:13px;
+      padding:4px 10px;border-radius:7px;background:#F3F7F9;border:1px solid #DCE6EB;color:#44535C;}
+  .fr.top{background:#FFF3E2;border-color:var(--midbd);color:#6B3B18;font-weight:700;}
+  .fr .lv{color:#9FB0B9;margin-right:8px;}
+
+  .tbox{flex:1;min-height:230px;max-height:400px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .tbox svg{max-width:100%;max-height:100%;}
+  svg text{font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace;}
+  .ed{stroke:#C3D0D7;stroke-width:1.8;fill:none;}
+  .ed.path{stroke:var(--midbd);stroke-width:3.4;}
+  .nd{fill:#fff;stroke:#C3D0D7;stroke-width:1.8;}
+  .nd.seen{fill:var(--leafbg);stroke:var(--leafbd);stroke-width:2;}
+  .nd.done{fill:#D5E9EF;stroke:var(--leafbd);stroke-width:2;}
+  .nd.path{fill:var(--midbg);stroke:var(--midbd);stroke-width:3;}
+  .ntx{font-weight:700;text-anchor:middle;}
+
+  .outbox{display:flex;gap:12px;align-items:flex-start;}
+  .outcol{flex:1;min-width:0;}
+  pre.out{margin:0;font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:12.4px;
+          line-height:1.45;background:#22313A;color:#D7E3E8;border-radius:9px;
+          padding:9px 11px;height:116px;overflow:auto;white-space:pre;}
+  pre.out .fin{color:#F3B46A;font-weight:700;}
+  .resbox{flex:0 0 232px;}
+  .chips{display:flex;gap:5px;flex-wrap:wrap;max-height:116px;overflow:auto;}
+  .chip{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:12.5px;font-weight:700;
+        padding:2px 8px;border-radius:6px;background:var(--leafbg);
+        border:2px solid var(--leafbd);color:var(--leafink);}
+  .chip.new{background:var(--midbg);border-color:var(--midbd);color:var(--midink);}
+  .none{font-size:12.6px;color:#A7B4BC;}
+
+  footer{margin-top:12px;}
+  .ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  button.b{font:inherit;font-size:13.5px;font-weight:700;padding:7px 13px;border-radius:8px;
+           border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;min-width:42px;}
+  button.b:hover:not(:disabled){border-color:var(--midbd);color:var(--midink);}
+  button.b:disabled{opacity:.38;cursor:default;}
+  button.b.play{background:var(--teal);border-color:var(--teal);color:#fff;}
+  button.b.play:hover{background:#15505f;color:#fff;}
+  .count{font-size:13px;font-weight:700;color:var(--mut);font-variant-numeric:tabular-nums;
+         min-width:104px;text-align:center;}
+  input[type=range]{flex:1;min-width:140px;accent-color:#1A5F72;}
+  select{font:inherit;font-size:13px;padding:6px 9px;border-radius:8px;border:2px solid var(--line);background:#fff;}
+  .msg{margin-top:10px;padding:10px 13px;border-radius:10px;background:#fff;
+       border:1px solid var(--line);border-left:5px solid var(--warm);font-size:14.5px;line-height:1.5;min-height:44px;}
+  .msg b{color:var(--midink);}
+  .msg code{font-family:"SFMono-Regular",Menlo,Consolas,monospace;background:#EDF3F6;
+            padding:1px 5px;border-radius:4px;font-size:.94em;color:#1A3A48;}
+  .msg .up{color:var(--hot);font-weight:700;}
+  .msg .dn{color:#1A6FA8;font-weight:700;}
+  .foot{margin-top:8px;font-size:12px;color:#93A1AA;line-height:1.55;}
+  .foot b{color:#B0651F;}
+
+  @media (max-width:1180px){ .main{flex-direction:column;} .codecol{flex:none;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>키패드 글자 조합 — 백트래킹 한 단계씩 <span class="tag">학생용</span></h1>
+    <p class="sub">코드의 <span class="bl">주황 빈칸</span>은 실습에서 직접 채우는 자리입니다. 여기서는 <b>그 줄이 무슨 일을 하는지</b>와, 재귀가 어떻게 내려갔다 올라오는지를 봅니다.</p>
+    <div class="exrow"><span class="tag">입력</span>
+      <button class="ex on" data-ex="25">number = [2, 5] &nbsp;· 9개 조합</button>
+      <button class="ex" data-ex="259">number = [2, 5, 9] &nbsp;· 36개 조합</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <section class="card codecol"><div id="code"></div></section>
+
+    <section class="stage">
+      <div class="card panel">
+        <h3><span>지금 상태</span><span class="hint">재귀 호출 하나 = 스택 한 줄</span></h3>
+        <div class="vars" id="vars"></div>
+        <div class="stk" id="stk"></div>
+      </div>
+
+      <div class="card panel" style="flex:1;display:flex;flex-direction:column;">
+        <h3>결정 트리 (decision space)<span class="hint">주황 = 지금 서 있는 경로 · 진한 칸 = 완성된 조합</span></h3>
+        <div class="tbox" id="tree"></div>
+      </div>
+
+      <div class="card panel">
+        <h3><span>출력과 result</span><span class="hint" id="cnt"></span></h3>
+        <div class="outbox">
+          <div class="outcol"><pre class="out" id="out"></pre></div>
+          <div class="resbox"><div class="chips" id="res"></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="ctl">
+      <button class="b" id="first" title="처음으로">⏮</button>
+      <button class="b" id="prev" title="이전 (←)">◀</button>
+      <button class="b play" id="play" title="재생 (Space)">▶ 재생</button>
+      <button class="b" id="next" title="다음 (→)">▶</button>
+      <button class="b" id="last" title="끝으로">⏭</button>
+      <span class="count" id="count">단계 1 / 1</span>
+      <input type="range" id="slider" min="0" max="0" value="0">
+      <select id="speed">
+        <option value="420">빠르게 0.42초</option>
+        <option value="750" selected>보통 0.75초</option>
+        <option value="1200">느리게 1.2초</option>
+        <option value="2000">아주 느리게 2초</option>
+      </select>
+    </div>
+    <div class="msg" id="msg"></div>
+    <div class="foot">← → 키로 한 단계씩, Space 로 재생/일시정지. &nbsp;·&nbsp;
+      <b>되돌리기</b>는 눈에 보이는 코드가 아니라 <b>재귀가 끝나고 돌아오는 것</b> 자체입니다 —
+      스택에서 한 줄이 사라질 때마다 글자 하나를 되물린 셈입니다.</div>
+  </footer>
+</div>
+
+<script>
+/* ═══════ 코드 (강의 실습의 빈칸판) ═══════ */
+const LINES = [
+  {t:"hashTable = [<span class='s'>\"\"</span>, <span class='s'>\"\"</span>, <span class='s'>\"ABC\"</span>, <span class='s'>\"DEF\"</span>, <span class='s'>\"GHI\"</span>, <span class='s'>\"JKL\"</span>,"},
+  {t:"             <span class='s'>\"MNO\"</span>, <span class='s'>\"PQRS\"</span>, <span class='s'>\"TUV\"</span>, <span class='s'>\"WXYZ\"</span>]"},
+  {blank:1},
+  {id:'kin', t:"number = [<span class='n'>2</span>, <span class='n'>5</span>]"},
+  {blank:1},
+  {id:'k0a', t:"idx    = <span class='n'>0</span>          <span class='c'># 처음 글자를 고를 숫자의 자리</span>"},
+  {id:'k0b', t:"letter = <span class='s'>''</span>         <span class='c'># 아직 고른 글자 없음</span>"},
+  {id:'k0c', t:"result = []         <span class='c'># 완성된 조합을 모으는 전역 변수</span>"},
+  {blank:1},
+  {id:'kdef',t:"<span class='k'>def</span> <span class='f'>backtracking</span>(number, idx, letter):"},
+  {id:'k1',  t:"    <span class='k'>if</span> <span class='b'>___</span> &gt;= <span class='b'>___</span>:                  <span class='c'># 종료 조건 — 숫자를 다 썼으면</span>"},
+  {id:'k2',  t:"        <span class='f'>print</span>(<span class='s'>'final?'</span>, letter)"},
+  {id:'k3',  t:"        result.<span class='f'>append</span>(letter)        <span class='c'># 완성된 조합 하나 담기</span>"},
+  {id:'k4',  t:"        <span class='k'>return</span> letter"},
+  {id:'k5',  t:"    num = number[<span class='b'>___</span>]              <span class='c'># idx 에 해당하는 수</span>"},
+  {id:'k6',  t:"    <span class='k'>for</span> ch <span class='k'>in</span> hashTable[<span class='b'>___</span>]:       <span class='c'># 해당 수가 가질 수 있는 글자 ch</span>"},
+  {id:'k7',  t:"        <span class='f'>print</span>(idx, ch, letter)"},
+  {id:'k8',  t:"        <span class='f'>backtracking</span>(number, <span class='b'>___</span>, <span class='b'>___</span>)   <span class='c'># 다음 자리로, 글자 붙여서</span>"},
+  {blank:1},
+  {id:'k9',  t:"<span class='f'>backtracking</span>(number, idx, letter)"},
+  {id:'k10', t:"<span class='f'>print</span>(<span class='f'>len</span>(result))"},
+  {id:'k11', t:"<span class='f'>print</span>(result[:<span class='n'>5</span>])"}
+];
+
+const HASH = ["", "", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ"];
+const EXAMPLES = { "25": [2,5], "259": [2,5,9] };
+let NUMBER = EXAMPLES["25"];
+
+function renderCode(){
+  document.getElementById('code').innerHTML = LINES.map(l => {
+    if (l.blank) return `<div class="ln blank"></div>`;
+    let t = l.t;
+    if (l.id === 'kin')
+      t = "number = [" + NUMBER.map(n => `<span class='n'>${n}</span>`).join(", ") + "]";
+    return `<div class="ln"${l.id ? ` data-id="${l.id}"` : ''}>${t}</div>`;
+  }).join('');
+}
+
+/* ═══════ 결정 트리 모양 ═══════ */
+function buildTree(num){
+  let id = 0;
+  const nodes = [], byKey = {};
+  (function make(depth, letter, parent){
+    const n = {id:id++, depth:depth, letter:letter, parent:parent, kids:[]};
+    nodes.push(n); byKey[depth + '|' + letter] = n;
+    if (parent) parent.kids.push(n);
+    if (depth < num.length) for (const ch of HASH[num[depth]]) make(depth+1, letter+ch, n);
+    return n;
+  })(0, '', null);
+  // 잎부터 x 좌표 배정
+  let slot = 0;
+  (function place(n){
+    if (!n.kids.length){ n.x = slot++; return; }
+    n.kids.forEach(place);
+    n.x = (n.kids[0].x + n.kids[n.kids.length-1].x) / 2;
+  })(nodes[0]);
+  return {nodes:nodes, byKey:byKey, leaves:slot, depth:num.length};
+}
+
+/* ═══════ 실행 기록 ═══════ */
+function buildTrace(num){
+  const steps = [];
+  const out = [], result = [], stack = [];
+  let seen = {}, path = [], cur = {num:null, ch:null}, fresh = null;
+
+  const snap = (line, msg) => steps.push({
+    line: [].concat(line), msg: msg,
+    out: out.slice(), result: result.slice(), fresh: fresh,
+    stack: stack.map(f => ({idx:f.idx, letter:f.letter})),
+    seen: Object.assign({}, seen), path: path.slice(),
+    idx: stack.length ? stack[stack.length-1].idx : null,
+    letter: stack.length ? stack[stack.length-1].letter : null,
+    num: cur.num, ch: cur.ch
+  });
+
+  snap(['k0a','k0b','k0c'], `시작 상태 — <code>idx = 0</code>, <code>letter = ''</code>, <code>result = []</code>. 아직 아무 글자도 고르지 않았다.`);
+  snap('k9', `맨 바깥에서 <code>backtracking</code> 을 처음 부른다. 여기서부터 트리를 타고 내려간다.`);
+
+  (function go(idx, letter){
+    stack.push({idx:idx, letter:letter});
+    seen[idx + '|' + letter] = 1;
+    path = stack.map(f => f.idx + '|' + f.letter);
+    cur = {num:null, ch:null};
+    fresh = null;
+
+    const done = idx >= num.length;
+    snap('k1', `종료 조건을 본다 — 지금 자리는 <b>${idx}</b>, 숫자는 <b>${num.length}</b>개. `
+      + (done ? `다 썼다 → <span class="dn">조합 완성</span>` : `아직 ${num.length - idx}자리 남았다 → 계속 내려간다`));
+
+    if (done){
+      out.push({t:`final? ${letter}`, fin:1});
+      snap('k2', `<code>print('final?', ...)</code> — 완성된 조합 <b>'${letter}'</b> 을 찍는다.`);
+      result.push(letter); fresh = letter;
+      snap('k3', `<code>result</code> 에 <b>'${letter}'</b> 을 담는다. 지금까지 <b>${result.length}개</b>.`);
+      fresh = null;
+      snap('k4', `<span class="up">return</span> — 더 내려갈 데가 없으니 <b>한 칸 위로 돌아간다</b>. 스택에서 한 줄이 사라진다.`);
+      stack.pop(); path = stack.map(f => f.idx + '|' + f.letter);
+      return;
+    }
+
+    cur.num = num[idx];
+    snap('k5', `이번 자리의 숫자를 꺼낸다 → <code>num = ${cur.num}</code>.`);
+
+    for (const ch of HASH[cur.num]){
+      cur.ch = ch;
+      snap('k6', `숫자 ${cur.num} 가 낼 수 있는 글자 <code>${HASH[cur.num]}</code> 중에서 <b>'${ch}'</b> 를 고른다.`);
+      out.push({t:`${idx} ${ch} '${letter}'`});
+      snap('k7', `<code>print(idx, ch, letter)</code> — 지금 자리 ${idx}, 고른 글자 '${ch}', 여기까지 모은 글자 '${letter}'.`);
+      snap('k8', `<span class="dn">한 칸 내려간다</span> — 자리는 다음으로, 글자는 <b>'${letter}' + '${ch}' = '${letter + ch}'</b> 로.`);
+      go(idx + 1, letter + ch);
+      cur.num = num[idx]; cur.ch = ch;
+      path = stack.map(f => f.idx + '|' + f.letter);
+    }
+
+    cur.ch = null;
+    snap('k6', `<code>for</code> 가 끝났다 — 이 자리에서 쓸 글자 <code>${HASH[num[idx]]}</code> 를 모두 써 봤다. `
+      + (stack.length > 1 ? `<span class="up">한 칸 위로 돌아간다.</span>` : `맨 바깥까지 돌아왔다.`));
+    stack.pop(); path = stack.map(f => f.idx + '|' + f.letter);
+  })(0, '');
+
+  cur = {num:null, ch:null};
+  out.push({t:String(result.length)});
+  snap('k10', `<code>print(len(result))</code> → <b>${result.length}</b>개. ${num.map(n=>HASH[n].length).join(' × ')} = ${result.length} 과 같다.`);
+  out.push({t:"['" + result.slice(0,5).join("', '") + "']"});
+  snap('k11', `앞에서 5개만 보면 <code>${result.slice(0,5).join(', ')}</code>. 트리의 가장 왼쪽 가지부터 차례로 완성된 것이다.`);
+  return steps;
+}
+
+/* ═══════ 그리기 ═══════ */
+let TREE = null;
+function drawTree(st){
+  const T = TREE;
+  const SLOT = Math.min(76, 1180 / Math.max(T.leaves,1));
+  const ROW  = T.depth >= 3 ? 76 : 92;
+  const W = T.leaves * SLOT + 30, H = (T.depth + 1) * ROW + 16;
+  const bw = Math.min(SLOT - 6, 56), bh = Math.min(30, ROW * 0.33);
+  const fs = Math.max(9, Math.min(15, bw / 2.3));
+  const X = n => 15 + (n.x + 0.5) * SLOT, Y = n => 14 + n.depth * ROW + bh/2;
+  const onPath = k => st.path.indexOf(k) >= 0;
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">`;
+  T.nodes.forEach(n => {
+    if (!n.parent) return;
+    const k = n.depth + '|' + n.letter, pk = n.parent.depth + '|' + n.parent.letter;
+    if (!st.seen[k]) return;
+    const lit = onPath(k) && onPath(pk);
+    s += `<path class="ed${lit?' path':''}" d="M ${X(n.parent)} ${Y(n.parent)+bh/2} L ${X(n)} ${Y(n)-bh/2}"/>`;
+  });
+  T.nodes.forEach(n => {
+    const k = n.depth + '|' + n.letter;
+    if (!st.seen[k]) return;
+    let cls = 'nd seen';
+    if (st.result.indexOf(n.letter) >= 0 && n.depth === T.depth) cls = 'nd done';
+    if (onPath(k)) cls = 'nd path';
+    const cx = X(n), cy = Y(n);
+    s += `<rect class="${cls}" x="${cx-bw/2}" y="${cy-bh/2}" width="${bw}" height="${bh}" rx="7"/>`;
+    s += `<text class="ntx" x="${cx}" y="${cy+fs*0.36}" font-size="${fs}" `
+       + `fill="${onPath(k)?'#8A3A12':'#14343F'}">${n.letter === '' ? "''" : n.letter}</text>`;
+  });
+  return s + '</svg>';
+}
+
+/* ═══════ 화면 ═══════ */
+let TRACE = null, idx = 0, timer = null;
+
+function render(){
+  const st = TRACE[idx];
+  document.querySelectorAll('.ln').forEach(e => e.classList.remove('on'));
+  st.line.forEach(id => { const e = document.querySelector(`.ln[data-id='${id}']`); if (e) e.classList.add('on'); });
+
+  const v = (n, val, dim) => `<span class="v"><span class="vn">${n}</span>`
+      + `<span class="vv${dim?' dim':''}">${val}</span></span>`;
+  document.getElementById('vars').innerHTML =
+      v('idx', st.idx === null ? '—' : st.idx, st.idx === null)
+    + v('letter', st.letter === null ? '—' : `'${st.letter}'`, st.letter === null)
+    + v('num', st.num === null ? '—' : st.num, st.num === null)
+    + v('ch', st.ch === null ? '—' : `'${st.ch}'`, st.ch === null);
+
+  document.getElementById('stk').innerHTML = st.stack.length
+    ? st.stack.map((f,i) => `<div class="fr${i===st.stack.length-1?' top':''}">`
+        + `<span class="lv">${i+1}</span>backtracking(number, idx=${f.idx}, letter='${f.letter}')</div>`).join('')
+    : `<div class="fr"><span class="lv">·</span>호출 없음 — 아직 시작 전이거나 모두 끝났다</div>`;
+
+  document.getElementById('tree').innerHTML = drawTree(st);
+
+  const o = document.getElementById('out');
+  o.innerHTML = st.out.slice(-60).map(l =>
+      l.fin ? `<span class="fin">${l.t}</span>` : l.t).join('\n');
+  o.scrollTop = o.scrollHeight;
+
+  document.getElementById('res').innerHTML = st.result.length
+    ? st.result.map(r => `<span class="chip${r===st.fresh?' new':''}">${r}</span>`).join('')
+    : `<span class="none">아직 비어 있음</span>`;
+  document.getElementById('cnt').textContent = `result ${st.result.length}개`;
+
+  document.getElementById('msg').innerHTML = st.msg;
+  document.getElementById('count').textContent = `단계 ${idx+1} / ${TRACE.length}`;
+  document.getElementById('slider').value = idx;
+  document.getElementById('prev').disabled = document.getElementById('first').disabled = (idx === 0);
+  document.getElementById('next').disabled = document.getElementById('last').disabled = (idx === TRACE.length-1);
+}
+
+function load(key){
+  NUMBER = EXAMPLES[key];
+  TREE = buildTree(NUMBER);
+  TRACE = buildTrace(NUMBER);
+  idx = 0;
+  renderCode();
+  const sl = document.getElementById('slider'); sl.max = TRACE.length - 1; sl.value = 0;
+  document.querySelectorAll('button.ex').forEach(b => b.classList.toggle('on', b.dataset.ex === key));
+  render();
+}
+function go(i){ idx = Math.max(0, Math.min(TRACE.length-1, i)); render();
+                if (timer && idx === TRACE.length-1) stop(); }
+function stop(){ clearInterval(timer); timer = null; document.getElementById('play').textContent = '▶ 재생'; }
+function play(){
+  if (timer){ stop(); return; }
+  if (idx === TRACE.length-1) idx = 0;
+  document.getElementById('play').textContent = '⏸ 일시정지';
+  timer = setInterval(() => go(idx+1), parseInt(document.getElementById('speed').value, 10));
+}
+document.getElementById('next').onclick  = () => { stop(); go(idx+1); };
+document.getElementById('prev').onclick  = () => { stop(); go(idx-1); };
+document.getElementById('first').onclick = () => { stop(); go(0); };
+document.getElementById('last').onclick  = () => { stop(); go(TRACE.length-1); };
+document.getElementById('play').onclick  = play;
+document.getElementById('slider').oninput = e => { stop(); go(parseInt(e.target.value,10)); };
+document.getElementById('speed').onchange = () => { if (timer){ stop(); play(); } };
+document.querySelectorAll('button.ex').forEach(b => b.onclick = () => { stop(); load(b.dataset.ex); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight'){ e.preventDefault(); stop(); go(idx+1); }
+  else if (e.key === 'ArrowLeft'){ e.preventDefault(); stop(); go(idx-1); }
+  else if (e.code === 'Space'){ e.preventDefault(); play(); }
+});
+
+load("25");
+document.body.setAttribute('data-ready','1');
+</script>
+</body>
+</html>
