@@ -124,7 +124,7 @@
         </div>
       </div>
       <div class="card panel" style="flex:1;display:flex;flex-direction:column;">
-        <h3>그래프 9.3.1<span class="hint">채워진 노드 = V′ 에 들어간 정점 · e9, e10 은 a–g 평행 간선</span></h3>
+        <h3>그래프 9.3.1<span class="hint">채워진 노드 = V′ 에 들어간 정점 · <b style="color:#B0651F">e2 는 b–g</b> (h 옆을 지나가지만 닿지 않음) · e9, e10 은 a–g 평행 간선</span></h3>
         <div class="gbox" id="graph"></div>
       </div>
     </section>
@@ -149,7 +149,7 @@
     <div class="msg" id="msg"></div>
     <div class="foot">← → 키로 한 단계씩, Space 로 재생/일시정지. &nbsp;·&nbsp;
       이 수도코드는 <b>층(level) 단위</b>로 도는 BFS 입니다 — 큐(queue)로 구현한 BFS 와 결과는 같습니다.
-      교재 그림의 e9·e10 은 a–g 를 잇는 평행 간선이라 탐색 결과에는 영향이 없습니다.</div>
+      교재 그림에서 <b>e2 는 b–g</b> 를 잇습니다 — h 바로 옆을 지나가 b–h 로 보이기 쉬운데, h 의 이웃은 f 하나뿐(차수 1)입니다. e9·e10 은 a–g 평행 간선이라 탐색 결과에는 영향이 없습니다.</div>
   </footer>
 </div>
 
@@ -259,20 +259,21 @@ function buildTrace(){
 /* ═══════ 그래프 그리기 ═══════ */
 function pathOf(e){
   const [x1,y1] = POS[e.u], [x2,y2] = POS[e.v];
-  if (e.arc)  return `M ${x1} ${y1} C 10 ${y1+60}, 10 ${y2-60}, ${x2} ${y2}`;      // a–g 바깥 곡선
-  if (e.big)  return `M ${x1} ${y1} C 530 140, 530 430, 300 438 C 180 446, 110 420, ${x2} ${y2}`;
+  if (e.arc)  return `M ${x1} ${y1} C 8 ${y1+70}, 8 ${y2-70}, ${x2} ${y2}`;        // a–g 바깥 곡선 (e10)
+  // e2 는 b 와 g 를 잇는다. h 근처를 지나가므로 일부러 크게 돌려 h 와 겹치지 않게 그린다.
+  if (e.big)  return `M ${x1} ${y1} C 598 150, 598 455, 330 480 C 198 493, 116 448, ${x2} ${y2}`;
   return `M ${x1} ${y1} L ${x2} ${y2}`;
 }
 function midOf(e){
   const [x1,y1] = POS[e.u], [x2,y2] = POS[e.v];
-  if (e.arc) return [26, (y1+y2)/2];
-  if (e.big) return [500, 250];
+  if (e.arc) return [22, (y1+y2)/2];
+  if (e.big) return [556, 250];
   return [(x1+x2)/2, (y1+y2)/2];
 }
 function same(e,p){ return p && ((e.u===p[0]&&e.v===p[1])||(e.u===p[1]&&e.v===p[0])); }
 
 function drawGraph(st){
-  let s = `<svg viewBox="0 0 540 460" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">`;
+  let s = `<svg viewBox="0 0 622 508" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">`;
   const used = {};
   EDGES.forEach(e => {
     let inTree = false;                       // 평행 간선(e9·e10)은 하나만 트리로 칠한다
