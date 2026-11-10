@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BFS 수도 알고리즘 단계별 실행</title>
+<style>
+  :root{
+    --ink:#1F2A30; --mut:#5A6672; --line:#CBD8DF;
+    --leafbg:#E8F2F6; --leafbd:#2E7D8F; --leafink:#14343F;
+    --midbg:#FBE3CE;  --midbd:#E8823A;  --midink:#8A3A12;
+    --hot:#C4341B; --warm:#D4761A; --teal:#1A5F72;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#F4F7F9;color:var(--ink);}
+  body{font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;}
+  .wrap{max-width:1520px;margin:0 auto;padding:18px 18px 24px;}
+  .mono{font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace;}
+
+  header{margin-bottom:12px;}
+  h1{font-size:24px;font-weight:800;color:var(--hot);margin:0 0 3px;letter-spacing:-0.5px;}
+  .sub{font-size:14px;color:var(--mut);margin:0;}
+  .sub b{color:var(--teal);}
+
+  .main{display:flex;gap:16px;align-items:stretch;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;}
+  .codecol{flex:0 0 560px;padding:14px 14px 16px;overflow:auto;}
+  .stage{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;}
+
+  .ln{font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+      font-size:13.2px;line-height:1.52;white-space:pre-wrap;padding:1px 7px;border-radius:5px;
+      border-left:3px solid transparent;transition:background .12s,border-color .12s;}
+  .ln.blank{height:8px;padding:0;}
+  .ln.on{background:#FFF3E2;border-left-color:var(--warm);}
+  .ln.on2{background:#FFF9F0;border-left-color:#F0C89A;}
+  .ln .n{color:#9B3FBF;font-weight:700;}
+  .ln .c{color:#8A97A0;}
+  .ln .m{color:#1A6FA8;font-weight:700;}
+  .io{font-size:12.8px;color:#5A6672;padding:1px 7px;line-height:1.5;}
+  .legend{margin-top:12px;padding:10px 12px;border-radius:9px;background:#F3F7F9;
+          border:1px solid #DCE6EB;font-size:12.4px;color:#44535C;line-height:1.55;}
+  .legend b{color:var(--teal);}
+
+  .panel{padding:11px 13px 13px;}
+  .panel h3{margin:0 0 8px;font-size:13px;font-weight:800;color:var(--teal);
+            display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .panel h3 span.hint{font-size:11.5px;font-weight:600;color:#93A1AA;}
+
+  .vars{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;}
+  .vn{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:14px;font-weight:800;
+      color:var(--teal);text-align:right;white-space:nowrap;}
+  .vv{display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-height:30px;}
+  .chip{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:14px;font-weight:700;
+        padding:3px 10px;border-radius:7px;border:2px solid var(--leafbd);
+        background:var(--leafbg);color:var(--leafink);}
+  .chip.cur{background:var(--midbg);border-color:var(--midbd);color:var(--midink);
+            box-shadow:0 0 0 3px rgba(232,130,58,.45);}
+  .chip.new{border-style:dashed;}
+  .chip.edge{background:#EDF3F6;border-color:#BBD0D9;color:#1A3A48;}
+  .none{font-size:12.6px;color:#A7B4BC;}
+
+  .gbox{flex:1;min-height:300px;max-height:470px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .gbox svg{max-width:100%;max-height:100%;}
+  svg text{font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace;}
+  .ed{stroke:#C3D0D7;stroke-width:2.4;fill:none;}
+  .ed.tree{stroke:var(--leafbd);stroke-width:5;}
+  .ed.test{stroke:var(--hot);stroke-width:3.4;stroke-dasharray:7 5;}
+  .elab{font-size:12px;fill:#9FB0B9;font-style:italic;}
+  .nd{fill:#fff;stroke:#B9C7CE;stroke-width:2.4;}
+  .nd.inv{fill:var(--leafbg);stroke:var(--leafbd);}
+  .nd.cur{fill:var(--midbg);stroke:var(--midbd);stroke-width:4.5;}
+  .nd.cand{stroke:var(--hot);stroke-width:4;stroke-dasharray:6 4;}
+  .ntx{font-size:17px;font-weight:800;text-anchor:middle;}
+
+  footer{margin-top:12px;}
+  .ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  button.b{font:inherit;font-size:13.5px;font-weight:700;padding:7px 13px;border-radius:8px;
+           border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;min-width:42px;}
+  button.b:hover:not(:disabled){border-color:var(--midbd);color:var(--midink);}
+  button.b:disabled{opacity:.38;cursor:default;}
+  button.b.play{background:var(--teal);border-color:var(--teal);color:#fff;}
+  button.b.play:hover{background:#15505f;color:#fff;}
+  .count{font-size:13px;font-weight:700;color:var(--mut);font-variant-numeric:tabular-nums;
+         min-width:96px;text-align:center;}
+  input[type=range]{flex:1;min-width:140px;accent-color:#1A5F72;}
+  select{font:inherit;font-size:13px;padding:6px 9px;border-radius:8px;border:2px solid var(--line);background:#fff;}
+  .msg{margin-top:10px;padding:10px 13px;border-radius:10px;background:#fff;
+       border:1px solid var(--line);border-left:5px solid var(--warm);font-size:14.5px;line-height:1.5;min-height:44px;}
+  .msg b{color:var(--midink);}
+  .msg code{font-family:"SFMono-Regular",Menlo,Consolas,monospace;background:#EDF3F6;
+            padding:1px 5px;border-radius:4px;font-size:.94em;color:#1A3A48;}
+  .msg .no{color:var(--hot);font-weight:700;}
+  .msg .yes{color:#1A6FA8;font-weight:700;}
+  .foot{margin-top:8px;font-size:12px;color:#93A1AA;line-height:1.55;}
+
+  @media (max-width:1140px){ .main{flex-direction:column;} .codecol{flex:none;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>BFS 수도 알고리즘 — 한 단계씩 따라가기</h1>
+    <p class="sub">강의자료의 수도코드를 <b>그래프 9.3.1</b> 에 그대로 적용합니다. 왼쪽 수도코드의 지금 실행 중인 줄과, 오른쪽 변수·그래프가 같이 움직입니다.</p>
+  </header>
+
+  <div class="main">
+    <section class="card codecol">
+      <div id="code"></div>
+      <div class="legend">
+        <b>S</b> 지금 펼치고 있는 층의 정점 목록 &nbsp;·&nbsp; <b>next</b> 다음 층이 될 정점 목록<br>
+        <b>V′</b> 트리에 들어간 정점 &nbsp;·&nbsp; <b>E′</b> 트리에 들어간 간선<br>
+        그래프에서 <span style="color:#2E7D8F;font-weight:700">굵은 청록 간선</span>이 E′, <span style="color:#C4341B;font-weight:700">빨간 점선</span>이 지금 "간선인가?" 를 확인 중인 쌍입니다.
+      </div>
+    </section>
+
+    <section class="stage">
+      <div class="card panel">
+        <h3><span>변수 상태</span><span class="hint" id="roundlab"></span></h3>
+        <div class="vars">
+          <span class="vn">S</span><div class="vv" id="vS"></div>
+          <span class="vn">next</span><div class="vv" id="vN"></div>
+          <span class="vn">V′</span><div class="vv" id="vV"></div>
+          <span class="vn">E′</span><div class="vv" id="vE"></div>
+        </div>
+      </div>
+      <div class="card panel" style="flex:1;display:flex;flex-direction:column;">
+        <h3>그래프 9.3.1<span class="hint">채워진 노드 = V′ 에 들어간 정점 · e9, e10 은 a–g 평행 간선</span></h3>
+        <div class="gbox" id="graph"></div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="ctl">
+      <button class="b" id="first" title="처음으로">⏮</button>
+      <button class="b" id="prev" title="이전 (←)">◀</button>
+      <button class="b play" id="play" title="재생 (Space)">▶ 재생</button>
+      <button class="b" id="next" title="다음 (→)">▶</button>
+      <button class="b" id="last" title="끝으로">⏭</button>
+      <span class="count" id="count">단계 1 / 1</span>
+      <input type="range" id="slider" min="0" max="0" value="0">
+      <select id="speed">
+        <option value="550">빠르게 0.55초</option>
+        <option value="950" selected>보통 0.95초</option>
+        <option value="1500">느리게 1.5초</option>
+        <option value="2200">아주 느리게 2.2초</option>
+      </select>
+    </div>
+    <div class="msg" id="msg"></div>
+    <div class="foot">← → 키로 한 단계씩, Space 로 재생/일시정지. &nbsp;·&nbsp;
+      이 수도코드는 <b>층(level) 단위</b>로 도는 BFS 입니다 — 큐(queue)로 구현한 BFS 와 결과는 같습니다.
+      교재 그림의 e9·e10 은 a–g 를 잇는 평행 간선이라 탐색 결과에는 영향이 없습니다.</div>
+  </footer>
+</div>
+
+<script>
+/* ═══════ 수도코드 (강의자료 그대로) ═══════ */
+const LINES = [
+  {io:"입력:  정점 집합 V와 간선 집합 E로 구성된 연결 그래프 G"},
+  {io:"출력:  스패닝 트리 T"},
+  {blank:1},
+  {id:'l1',  t:"<span class='n'>1.</span> 시작 정점 v1을 선택함"},
+  {id:'l2',  t:"<span class='n'>2.</span> 트리에 포함된 정점 집합 V′ ← {v1}"},
+  {id:'l3',  t:"<span class='n'>3.</span> 트리의 간선 집합 E′ ← ø"},
+  {id:'l4',  t:"<span class='n'>4.</span> 현재 단계의 정점 리스트 S ← [v1]"},
+  {blank:1},
+  {id:'l5',  t:"<span class='n'>5.</span> 반복함"},
+  {id:'l51', t:"   <span class='n'>5-1.</span> 다음 단계의 정점 리스트 next ← 빈 리스트"},
+  {id:'l52', t:"   <span class='n'>5-2.</span> S의 각 정점 x에 대해"},
+  {id:'l52a',t:"        (<span class='m'>1</span>) 아직 트리에 포함되지 않은 모든 정점 y를 살펴봄"},
+  {id:'l52b',t:"        (<span class='m'>2</span>) 만약 (x, y)가 간선이면"},
+  {id:'l52c',t:"             – 간선 (x, y)를 트리에 추가:  E′ ← E′ ∪ {(x, y)}"},
+  {id:'l52d',t:"             – 정점 y를 트리에 추가:       V′ ← V′ ∪ {y}"},
+  {id:'l52e',t:"             – next 리스트에 y를 추가함"},
+  {id:'l53', t:"   <span class='n'>5-3.</span> 만약 이번 단계에서 새로운 정점이 추가되지 않았다면 탐색 종료"},
+  {id:'l54', t:"   <span class='n'>5-4.</span> S ← next   <span class='c'>// 다음 단계로 이동</span>"},
+  {blank:1},
+  {id:'l6',  t:"<span class='n'>6.</span> 결과: T = (V′, E′)"}
+];
+document.getElementById('code').innerHTML = LINES.map(l =>
+  l.io ? `<div class="io">${l.io}</div>`
+       : l.blank ? `<div class="ln blank"></div>`
+                 : `<div class="ln" data-id="${l.id}">${l.t}</div>`).join('');
+
+/* ═══════ 그래프 9.3.1 ═══════ */
+const V = ["a","b","c","d","e","f","g","h"];
+const POS = {a:[90,62], b:[430,62], c:[190,152], d:[330,152],
+             e:[190,292], f:[330,292], g:[90,382], h:[430,382]};
+/* 교재 간선 번호까지 그대로. a–g 는 e9(직선)·e10(바깥 곡선) 두 개 */
+const EDGES = [
+  {u:"a", v:"b", lab:"e1"},  {u:"b", v:"g", lab:"e2", big:1},
+  {u:"b", v:"d", lab:"e3"},  {u:"d", v:"f", lab:"e4"},
+  {u:"f", v:"h", lab:"e5"},  {u:"e", v:"f", lab:"e6"},
+  {u:"c", v:"d", lab:"e7"},  {u:"c", v:"e", lab:"e8"},
+  {u:"a", v:"g", lab:"e9"},  {u:"a", v:"g", lab:"e10", arc:1},
+  {u:"e", v:"g", lab:"e11"}, {u:"a", v:"c", lab:"e12"}
+];
+const ADJ = {};
+V.forEach(x => ADJ[x] = []);
+EDGES.forEach(({u,v}) => { if(!ADJ[u].includes(v)) ADJ[u].push(v);
+                           if(!ADJ[v].includes(u)) ADJ[v].push(u); });
+
+/* ═══════ 실행 기록 ═══════ */
+function buildTrace(){
+  const steps = [];
+  let Vp = [], Ep = [], S = [], nx = [], round = 0;
+  const snap = (line, msg, o) => {
+    o = o || {};
+    steps.push({ line: [].concat(line), msg: msg, round: round,
+      Vp: Vp.slice(), Ep: Ep.map(e => e.slice()), S: S.slice(), nx: nx.slice(),
+      cur: o.cur || null, cand: o.cand || null, test: o.test || null, fresh: o.fresh || null });
+  };
+
+  snap('l1', `시작 정점 <b>v1 = a</b> 를 고른다. 여기서부터 층을 하나씩 넓혀 간다.`, {cur:'a'});
+  Vp = ['a'];  snap('l2', `트리에 들어간 정점 <code>V′ = {a}</code>.`, {cur:'a'});
+  Ep = [];     snap('l3', `트리의 간선은 아직 없다 — <code>E′ = ø</code>.`, {cur:'a'});
+  S = ['a'];   snap('l4', `지금 펼칠 층 <code>S = [a]</code>. 0층은 시작 정점 하나뿐이다.`, {cur:'a'});
+
+  while (true){
+    round++;
+    nx = [];
+    snap('l51', `<b>${round}번째 반복</b> 시작 — 다음 층을 담을 <code>next</code> 를 비운다.`);
+
+    for (const x of S){
+      snap('l52', `S 의 정점 <b>x = ${x}</b> 를 펼친다.`, {cur:x});
+      let looked = 0;
+      for (const y of V){
+        if (Vp.indexOf(y) >= 0) continue;          // 이미 트리에 있는 정점은 건너뜀
+        looked++;
+        const isEdge = ADJ[x].indexOf(y) >= 0;
+        if (isEdge){
+          Ep.push([x,y]); Vp.push(y); nx.push(y);
+          snap(['l52b','l52c','l52d','l52e'],
+            `<span class="yes">(${x}, ${y}) 는 간선이다</span> → <code>E′</code> 에 (${x},${y}) 추가, <code>V′</code> 에 ${y} 추가, <code>next</code> 에 ${y} 추가.`,
+            {cur:x, cand:y, test:[x,y], fresh:y});
+        } else {
+          snap(['l52a','l52b'],
+            `y = ${y} 는 아직 트리에 없다. <span class="no">(${x}, ${y}) 는 간선이 아니므로</span> 건너뛴다.`,
+            {cur:x, cand:y, test:[x,y]});
+        }
+      }
+      if (looked === 0)
+        snap('l52a', `정점 ${x} 에서 볼 후보가 없다 — 트리에 아직 안 들어간 정점이 하나도 남지 않았다.`, {cur:x});
+    }
+
+    if (nx.length === 0){
+      snap('l53', `이번 단계에서 <b>새로 추가된 정점이 없다</b> → 탐색을 끝낸다.`);
+      break;
+    }
+    snap('l53', `이번 단계에서 <b>${nx.length}개</b>(${nx.join(', ')})가 새로 추가되었다 → 반복을 계속한다.`);
+    S = nx.slice();
+    snap('l54', `<code>S ← next = [${S.join(', ')}]</code> — ${round}층으로 내려간다.`);
+  }
+
+  snap('l6', `완성. <code>T = (V′, E′)</code> 는 정점 <b>${Vp.length}개</b>, 간선 <b>${Ep.length}개</b> — 트리이므로 간선 수가 정점 수보다 하나 적다.`);
+  return steps;
+}
+
+/* ═══════ 그래프 그리기 ═══════ */
+function pathOf(e){
+  const [x1,y1] = POS[e.u], [x2,y2] = POS[e.v];
+  if (e.arc)  return `M ${x1} ${y1} C 10 ${y1+60}, 10 ${y2-60}, ${x2} ${y2}`;      // a–g 바깥 곡선
+  if (e.big)  return `M ${x1} ${y1} C 530 140, 530 430, 300 438 C 180 446, 110 420, ${x2} ${y2}`;
+  return `M ${x1} ${y1} L ${x2} ${y2}`;
+}
+function midOf(e){
+  const [x1,y1] = POS[e.u], [x2,y2] = POS[e.v];
+  if (e.arc) return [26, (y1+y2)/2];
+  if (e.big) return [500, 250];
+  return [(x1+x2)/2, (y1+y2)/2];
+}
+function same(e,p){ return p && ((e.u===p[0]&&e.v===p[1])||(e.u===p[1]&&e.v===p[0])); }
+
+function drawGraph(st){
+  let s = `<svg viewBox="0 0 540 460" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">`;
+  const used = {};
+  EDGES.forEach(e => {
+    let inTree = false;                       // 평행 간선(e9·e10)은 하나만 트리로 칠한다
+    for (let k = 0; k < st.Ep.length; k++){
+      if (used[k]) continue;
+      if (same(e, st.Ep[k])){ inTree = true; used[k] = 1; break; }
+    }
+    const testing = same(e, st.test);
+    let cls = 'ed' + (inTree ? ' tree' : '') + (testing ? ' test' : '');
+    s += `<path class="${cls}" d="${pathOf(e)}"/>`;
+    const [mx,my] = midOf(e);
+    s += `<text class="elab" x="${mx+9}" y="${my-6}">${e.lab}</text>`;
+  });
+  V.forEach(v => {
+    const [x,y] = POS[v];
+    let cls = 'nd' + (st.Vp.indexOf(v) >= 0 ? ' inv' : '');
+    if (st.cur === v)  cls += ' cur';
+    if (st.cand === v) cls += ' cand';
+    s += `<circle class="${cls}" cx="${x}" cy="${y}" r="21"/>`;
+    s += `<text class="ntx" x="${x}" y="${y+6}" fill="${st.Vp.indexOf(v)>=0?'#14343F':'#9FB0B9'}">${v}</text>`;
+  });
+  return s + '</svg>';
+}
+
+/* ═══════ 화면 ═══════ */
+const TRACE = buildTrace();
+let idx = 0, timer = null;
+
+function chips(arr, st, kind){
+  if (!arr.length) return `<span class="none">비어 있음</span>`;
+  return arr.map(v => {
+    let k = 'chip';
+    if (kind === 'edge') return `<span class="chip edge">(${v[0]}, ${v[1]})</span>`;
+    if (st.cur === v && kind === 'S') k += ' cur';
+    if (st.fresh === v) k += ' new';
+    return `<span class="${k}">${v}</span>`;
+  }).join('');
+}
+
+function render(){
+  const st = TRACE[idx];
+  document.querySelectorAll('.ln').forEach(e => e.classList.remove('on','on2'));
+  st.line.forEach(id => { const e = document.querySelector(`.ln[data-id='${id}']`); if (e) e.classList.add('on'); });
+  if (st.line.some(l => l.indexOf('l5') === 0 && l !== 'l5')){
+    const e5 = document.querySelector(".ln[data-id='l5']"); if (e5) e5.classList.add('on2');
+  }
+
+  document.getElementById('vS').innerHTML = chips(st.S, st, 'S');
+  document.getElementById('vN').innerHTML = chips(st.nx, st, 'N');
+  document.getElementById('vV').innerHTML = chips(st.Vp, st, 'V');
+  document.getElementById('vE').innerHTML = chips(st.Ep, st, 'edge');
+  document.getElementById('roundlab').textContent = st.round ? `${st.round}번째 반복 (${st.round-1}층 → ${st.round}층)` : '초기화';
+  document.getElementById('graph').innerHTML = drawGraph(st);
+  document.getElementById('msg').innerHTML = st.msg;
+  document.getElementById('count').textContent = `단계 ${idx+1} / ${TRACE.length}`;
+  document.getElementById('slider').value = idx;
+  document.getElementById('prev').disabled = document.getElementById('first').disabled = (idx === 0);
+  document.getElementById('next').disabled = document.getElementById('last').disabled = (idx === TRACE.length-1);
+}
+function go(i){ idx = Math.max(0, Math.min(TRACE.length-1, i)); render();
+                if (timer && idx === TRACE.length-1) stop(); }
+function stop(){ clearInterval(timer); timer = null; document.getElementById('play').textContent = '▶ 재생'; }
+function play(){
+  if (timer){ stop(); return; }
+  if (idx === TRACE.length-1) idx = 0;
+  document.getElementById('play').textContent = '⏸ 일시정지';
+  timer = setInterval(() => go(idx+1), parseInt(document.getElementById('speed').value, 10));
+}
+document.getElementById('next').onclick  = () => { stop(); go(idx+1); };
+document.getElementById('prev').onclick  = () => { stop(); go(idx-1); };
+document.getElementById('first').onclick = () => { stop(); go(0); };
+document.getElementById('last').onclick  = () => { stop(); go(TRACE.length-1); };
+document.getElementById('play').onclick  = play;
+document.getElementById('slider').oninput = e => { stop(); go(parseInt(e.target.value,10)); };
+document.getElementById('speed').onchange = () => { if (timer){ stop(); play(); } };
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight'){ e.preventDefault(); stop(); go(idx+1); }
+  else if (e.key === 'ArrowLeft'){ e.preventDefault(); stop(); go(idx-1); }
+  else if (e.code === 'Space'){ e.preventDefault(); play(); }
+});
+
+document.getElementById('slider').max = TRACE.length - 1;
+render();
+document.body.setAttribute('data-ready','1');
+</script>
+</body>
+</html>
